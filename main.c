@@ -37,27 +37,16 @@
 }                               \
 \
 
-void circ_vertices(coordinates *v, float x, float y, float r, unsigned q) {
 
-	float pi = 3.14f;
-	float counter = 0.0f;
-	float radius = r;
-	float angle = 0.0f;
-	float dx = 0.0f, dy = 0.0f;
-	for (int i = 0; i < q; i++){
-		angle += (2.0f * pi) / q;
-		dx = x + cos(angle) * radius;
-		dy = y + sin(angle) * radius;
-		v[i].x = dx;
-		v[i].y = dy;
-	}
-}
-
+void circ_vertices(coordinates *v, float x, float y, float r, unsigned q);
+void multiplica(float *m1, float *m2, float *m_resultado);
 
 float t_x = 0.0f;
 float t_y = 0.0f;
 
 float theta = 0.0f;
+
+float s = 1.0f;
 
 
 // funcao para processar eventos de teclado
@@ -70,8 +59,11 @@ static void key_event(GLFWwindow* window, int key, int scancode, int action, int
 	if(key==265) t_y += 0.01; // tecla para cima
 	if(key==264) t_y -= 0.01; // tecla para baixo
 
-	if(key == 81) theta += 1.0f;
-	if(key == 69) theta -= 1.0f;
+	if(key == 81) theta += 1.0f; // Q
+	if(key == 69) theta -= 1.0f; // E
+
+	if (key == 73) s += 0.01f; // I
+	if (key == 79) s -= 0.01f; // O
 }
 
 
@@ -244,10 +236,9 @@ int main(void){
 
 		loc = glGetUniformLocation(program, "mat_transformation");
 
-		//estrela
-		float mat_translation[16] = translation_matrix(t_x,t_y,0);
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_translation);
+		float escala[] = scale_matrix(s,s,1);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
+		glUniformMatrix4fv(loc, 1, GL_TRUE, escala);
 		glUniform4f(loc_color, 1.0, 1.0, 0.0, 1.0);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLES, 3, 3);
@@ -337,3 +328,54 @@ int main(void){
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }
+
+void circ_vertices(coordinates *v, float x, float y, float r, unsigned q) {
+
+	float pi = 3.14f;
+	float counter = 0.0f;
+	float radius = r;
+	float angle = 0.0f;
+	float dx = 0.0f, dy = 0.0f;
+	for (int i = 0; i < q; i++){
+		angle += (2.0f * pi) / q;
+		dx = x + cos(angle) * radius;
+		dy = y + sin(angle) * radius;
+		v[i].x = dx;
+		v[i].y = dy;
+	}
+}
+
+void multiplica(float *m1, float *m2, float *m_resultado){
+
+    float m_a[4][4];
+    float m_b[4][4];
+    float m_c[4][4]; // m_c = m_a * m_b
+
+    int n = 0;
+    for (int i = 0; i < 4; i++){
+        for (int j = 0; j < 4; j++){
+            m_a[i][j] = m1[n];
+            m_b[i][j] = m2[n];
+            n += 1;
+        }
+    }
+
+
+    for (int i = 0; i < 4 ; i++){    
+        for (int j = 0; j < 4 ; j++){
+            m_c[i][j] = 0.0f;
+            for(int k = 0; k < 4; k++){
+                m_c[i][j] += m_a[i][k] * m_b[k][j];    
+            }
+        }
+    }
+
+    n = 0;
+    for (int i = 0; i < 4; i++){
+        for (int j = 0; j < 4; j++){
+            m_resultado[n] = m_c[i][j];
+            n += 1;
+        }
+    }
+}
+
