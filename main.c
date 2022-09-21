@@ -5,13 +5,14 @@
 /* para compilar no windows: gcc main.c -lglfw3dll -lglew32 -lopengl32 */
 
 
-#include <GL/glew.h>  
-
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h> /* verifique no seu SO onde fica o glfw3.h */
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <GL/glew.h>  
+#include <GLFW/glfw3.h> /* verifique no seu SO onde fica o glfw3.h */
+#include "globjects.h"
+
+#define GLFW_INCLUDE_NONE
 
  
 
@@ -141,14 +142,32 @@ int main(void){
  
 
     // Preparando dados para enviar a GPU
-    coordenadas vertices[6] = { // criando tres vertices e preenchendo
+    // coordenadas vertices[] = { // criando tres vertices e preenchendo
+    //     {  0.0f, +0.5f },
+    //     { -0.5f, -0.5f },
+    //     { +0.5f, -0.5f },
+    //     {  0.0f, -0.5f },
+    //     { -0.5f, +0.5f },
+    //     { +0.5f, +0.5f }
+    // };
+
+    coordinates v1[] = {
         {  0.0f, +0.5f },
         { -0.5f, -0.5f },
-        { +0.5f, -0.5f },
+        { +0.5f, -0.5f }
+    };
+
+    coordinates v2[] = {
         {  0.0f, -0.5f },
         { -0.5f, +0.5f },
         { +0.5f, +0.5f }
     };
+
+    coordinates *vertices = veccnt(v1, 3, v2, 3);
+    for (int i = 0; i < 6; i++) printf("\nx: %f | y: %f", vertices[i].x, vertices[i].y);
+
+    coordinates vertices_final[6];
+    veccpy(vertices_final, 6, vertices, 6);
 
     GLuint buffer;
     glGenBuffers(1, &buffer);
@@ -156,7 +175,7 @@ int main(void){
 
 
     // Abaixo, nós enviamos todo o conteúdo da variável vertices.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_final), vertices_final, GL_DYNAMIC_DRAW);
 
 
     // Associando variáveis do programa GLSL (Vertex Shaders) com nossos dados
@@ -179,16 +198,7 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(1.0, 1.0, 1.0, 1.0);
 
-	 // criando a matriz de translacao
-        float mat_translation[16] = {
-            1.0f, 0.0f, 0.0f, t_x ,
-            0.0f, 1.0f, 0.0f, t_y ,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
-
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
+        float mat_translation[16] = translation_matrix(t_x,t_y,0);
 
         // enviando a matriz de transformacao para a GPU, vertex shader, variavel mat_transformation
         loc = glGetUniformLocation(program, "mat_transformation");
@@ -196,17 +206,7 @@ int main(void){
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_DYNAMIC_DRAW);
-
-        float c = cos( ((theta) * M_PI / 180.0) ); // cos considerando conversao para radianos
-        float s = sin( ((theta) * M_PI / 180.0) );
-
-        float mat_rotation[16] = {
-            c   , -s  , 0.0f, 0.0f,
-            s   ,  c  , 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
+        float mat_rotation[16] = rotation_z_matrix(theta);
 
         // loc = glGetUniformLocation(program, "mat_transformation");
         glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
