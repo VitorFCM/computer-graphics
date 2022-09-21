@@ -237,30 +237,32 @@ int main(void){
 		loc = glGetUniformLocation(program, "mat_transformation");
 
 		float escala[] = scale_matrix(s,s,1);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
-		glUniformMatrix4fv(loc, 1, GL_TRUE, escala);
-		glUniform4f(loc_color, 1.0, 1.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_TRIANGLES, 3, 3);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
+		// glUniformMatrix4fv(loc, 1, GL_TRUE, escala);
+		// glUniform4f(loc_color, 1.0, 1.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLES, 0, 3);
+		// glDrawArrays(GL_TRIANGLES, 3, 3);
+		desenha_estrela(estrela, loc, loc_color, escala);
 
 		//casa
 		float mat_rotation[16] = rotation_z_matrix(theta);
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(paredes), paredes, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(janela_esquerda), janela_esquerda, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(janela_direita), janela_direita, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(porta), porta, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(telhado), telhado, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(paredes), paredes, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(janela_esquerda), janela_esquerda, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(janela_direita), janela_direita, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(porta), porta, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(telhado), telhado, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLES, 0, 3);
+		desenha_casa(paredes, janela_esquerda, janela_direita, porta, telhado, loc, loc_color, mat_rotation);
 
 		float mat_rotation2[16] = rotation_z_matrix(0.0f);
 		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation2);
