@@ -17,10 +17,21 @@
 
 
 
-// variaveis globais
-typedef struct{
-	float x, y;
-} coordenadas;
+void circ_vertices(coordinates *v, float r, unsigned q) {
+
+	float pi = 3.14f;
+	float counter = 0.0f;
+	float radius = r;
+	float angle = 0.0f;
+	float x = 0.0f, y = 0.0f;
+	for (int i = 0; i < q; i++){
+		angle += (2.0f * pi) / q;
+		x = cos(angle) * radius;
+		y = 0.125f + sin(angle) * radius;
+		v[i].x = x;
+		v[i].y = y;
+	}
+}
 
 
 float t_x = 0.0f;
@@ -155,8 +166,7 @@ int main(void){
 	GLint loc = glGetAttribLocation(program, "position");
 	glEnableVertexAttribArray(loc);
 
-	coordinates estrela[6] = coordinates_estrela;
-	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, sizeof(estrela[0]), (void*) 0); // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
+	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, sizeof(coordinates), (void*) 0); // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
 
 
 	GLint loc_color = glGetUniformLocation(program, "color");
@@ -167,11 +177,21 @@ int main(void){
 	// Exibindo nossa janela
 	glfwShowWindow(window);
 
-	coordinates paredes[4] = paredes_casa;
-	coordinates janela_esquerda[4] = janela_esq;
-	coordinates janela_direita[4] = janela_dir;
-	coordinates porta[4] = porta_casa;
-	coordinates telhado[3] = telhado_casa;
+	//estrela
+	coordinates estrela[] = coordinates_estrela;
+
+	//casa
+	coordinates paredes[] = paredes_casa;
+	coordinates janela_esquerda[] = janela_esq;
+	coordinates janela_direita[] = janela_dir;
+	coordinates porta[] = porta_casa;
+	coordinates telhado[] = telhado_casa;
+
+	//foguete
+	coordinates corpo_f[] = corpo_foguete;
+	coordinates triangulos_f[] = triangulos_foguete;
+	coordinates janela_f[128];
+	circ_vertices(janela_f, 0.05f, 128);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -210,6 +230,20 @@ int main(void){
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		//foguete
+		glBufferData(GL_ARRAY_BUFFER, sizeof(corpo_f), corpo_f, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(janela_f), janela_f, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(triangulos_f), triangulos_f, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 3, 3);
+		glDrawArrays(GL_TRIANGLES, 6, 3);
 		glfwSwapBuffers(window);
 
 	}
