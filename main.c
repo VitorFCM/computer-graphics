@@ -15,21 +15,41 @@
 
 #define GLFW_INCLUDE_NONE
 
+#define translation_matrix(t_x,t_y,t_z) {   \
+            1.0f, 0.0f, 0.0f, t_x,          \
+            0.0f, 1.0f, 0.0f, t_y,          \
+            0.0f, 0.0f, 1.0f, t_z,          \
+            0.0f, 0.0f, 0.0f, 1.0f          \
+        }                                   \
 
+#define rotation_z_matrix(theta) {                                                  \
+            cos(((theta)*M_PI/180.0)), -sin(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
+            sin(((theta)*M_PI/180.0)),  cos(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
+            0.0f, 0.0f, 1.0f, 0.0f,                                                 \
+            0.0f, 0.0f, 0.0f, 1.0f                                                  \
+        }
+        
+#define scale_matrix(s_x,s_y,s_z) {     \
+            s_x, 0.0f, 0.0f, 0.0f,      \
+            0.0f, s_y, 0.0f, 0.0f,      \
+            0.0f, 0.0f, s_z, 0.0f,      \
+            0.0f, 0.0f, 0.0f, 1.0f      \
+        }                               \
+                                        \
 
-void circ_vertices(coordinates *v, float r, unsigned q) {
+void circ_vertices(coordinates *v, float x, float y, float r, unsigned q) {
 
 	float pi = 3.14f;
 	float counter = 0.0f;
 	float radius = r;
 	float angle = 0.0f;
-	float x = 0.0f, y = 0.0f;
+	float dx = 0.0f, dy = 0.0f;
 	for (int i = 0; i < q; i++){
 		angle += (2.0f * pi) / q;
-		x = cos(angle) * radius;
-		y = 0.125f + sin(angle) * radius;
-		v[i].x = x;
-		v[i].y = y;
+		dx = x + cos(angle) * radius;
+		dy = y + sin(angle) * radius;
+		v[i].x = dx;
+		v[i].y = dy;
 	}
 }
 
@@ -191,7 +211,7 @@ int main(void){
 	coordinates corpo_f[] = corpo_foguete;
 	coordinates triangulos_f[] = triangulos_foguete;
 	coordinates janela_f[128];
-	circ_vertices(janela_f, 0.05f, 128);
+	circ_vertices(janela_f, 0.0f, 0.125f, 0.05f, 128);
 
 	while (!glfwWindowShouldClose(window))
 	{
