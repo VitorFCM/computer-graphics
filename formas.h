@@ -1,7 +1,7 @@
 #ifndef FORMAS_H
 #define FORMAS_H
 
-#define coordinates_estrela{\
+#define coordinates_estrela {\
 	{  -0.5f, +0.25f },\
 	{ -0.75f, -0.25f },\
 	{ -0.25f, -0.25f },\

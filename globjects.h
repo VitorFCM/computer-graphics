@@ -1,6 +1,8 @@
 #ifndef GLOBJECTS_H
 #define GLOBJECTS_H
 
+#include <GL/glew.h>
+
 #define translation_matrix(t_x,t_y,t_z) {   \
             1.0f, 0.0f, 0.0f, t_x,          \
             0.0f, 1.0f, 0.0f, t_y,          \
@@ -26,8 +28,12 @@ typedef struct coordinates {
     float x, y;
 } coordinates;
 
+typedef struct glObject glObject;
 
 typedef struct glObject {
+
+    GLint gltransformation;
+    GLint glcolor;
     
     unsigned int number_vertices;
     coordinates *vertices;
@@ -36,17 +42,41 @@ typedef struct glObject {
     float t_y;
     float t_z;
 
+    GLfloat v0;
+    GLfloat v1;
+    GLfloat v2;
+    GLfloat v3;
+
+    int ref_scale; // 0 -> aplica escala com base na posição atual. 1-> aplica escala com base na referencia.
+    float ref_scale_x;
+    float ref_scale_y;
+    float ref_scale_z;
+
     float s_x;
     float s_y;
     float s_z;
 
-    float theta;
+    int ref_rotation; // 0 -> aplica rotação com base na posição atual. 1-> aplica rotação com base na referencia.
+    float ref_rotation_x;
+    float ref_rotation_y;
+    float ref_rotation_z;
+
+    float theta_z;
+
+    void (*destroy)(glObject *o);
+    void (*loadBuffer)(glObject *o);
+    void (*transform)(glObject *o);
+    void (*color)(glObject *o);
+    void (*draw)();
 
 } glObject;
 
 
-void initializeObject(glObject *o, unsigned int number_verticex);
-void destroyObject(glObject *o);
+void initializeObject(glObject *o, unsigned int number_verticex, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o));
+// void destroyObject(glObject *o);
+// void loadBuffer(glObject *o);
+// void transform(glObject *o, float x, float y, float z);
+// void color(glObject *o, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
 
 /* ---------------------------------------- */
 void veccpy(coordinates *dest, unsigned int size_dest, coordinates *origin, unsigned int size_origin);

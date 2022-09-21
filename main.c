@@ -11,6 +11,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "globjects.h"
+#include "objects.h"
 #include "formas.h"
 
 #define GLFW_INCLUDE_NONE
@@ -165,13 +166,9 @@ int main(void){
 	glUseProgram(program);
 
 
-
-
 	GLuint buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-
-
 
 
 	// Associando variáveis do programa GLSL (Vertex Shaders) com nossos dados
@@ -189,139 +186,185 @@ int main(void){
 	// Exibindo nossa janela
 	glfwShowWindow(window);
 
-	//estrela
-	coordinates estrela[] = coordinates_estrela;
+	// //estrela
+	// // coordinates estrela[] = coordinates_estrela;
+	// coordinates *estrela = (coordinates*) malloc(sizeof(coordinates) * 6);
+	// coordinates star[6] = coordinates_estrela;
+	// veccpy(estrela, 6, star, 6);
+	// printf("\nest: %ld | star: %ld\n", sizeof(estrela), sizeof(star));
 
-	//casa
-	coordinates paredes[] = paredes_casa;
-	coordinates janela_esquerda[] = janela_esq;
-	coordinates janela_direita[] = janela_dir;
-	coordinates porta[] = porta_casa;
-	coordinates telhado[] = telhado_casa;
+	coordinates quadrado[] = {
+		{0.5f,0.5f},
+		{0.5f,-0.5f},
+		{-0.5f,-0.5f},
+		{-0.5f,0.5f}
+	};
 
-	//foguete
-	coordinates corpo_f[] = corpo_foguete;
-	coordinates triangulos_f[] = triangulos_foguete;
-	coordinates janela_f[128];
-	circ_vertices(janela_f, 0.0f, 0.125f, 0.05f, 128);
+	// //casa
+	// coordinates paredes[] = paredes_casa;
+	// coordinates janela_esquerda[] = janela_esq;
+	// coordinates janela_direita[] = janela_dir;
+	// coordinates porta[] = porta_casa;
+	// coordinates telhado[] = telhado_casa;
 
-	//carro
-	coordinates lataria_c[] = lataria_carro(0, 0.0);
-	coordinates roda1[128];
-	circ_vertices(roda1, -0.85f, -0.97f, 0.05f, 128);
-	coordinates roda2[128];
-	circ_vertices(roda2, -0.45f, -0.97f, 0.05f, 128);
+	// //foguete
+	// coordinates corpo_f[] = corpo_foguete;
+	// coordinates triangulos_f[] = triangulos_foguete;
+	// coordinates janela_f[128];
+	// circ_vertices(janela_f, 0.0f, 0.125f, 0.05f, 128);
 
-	//boneco
-	coordinates cabeca[128];
-	circ_vertices(cabeca, 0.7f, -0.6f, 0.1f, 128);
-	coordinates corpo[128];
-	circ_vertices(corpo, 0.7f, -0.8f, 0.2f, 128);
-	coordinates olho1[128];
-	circ_vertices(olho1, 0.625f, -0.6f, 0.05f, 128);
-	coordinates olho2[128];
-	circ_vertices(olho2, 0.675f, -0.6f, 0.05f, 128);
-	coordinates miolho1[128];
-	circ_vertices(miolho1, 0.625f, -0.6f, 0.008f, 128);
-	coordinates miolho2[128];
-	circ_vertices(miolho2, 0.675f, -0.6f, 0.008f, 128);
+	// //carro
+	// coordinates lataria_c[] = lataria_carro(0, 0.0);
+	// coordinates roda1[128];
+	// circ_vertices(roda1, -0.85f, -0.97f, 0.05f, 128);
+	// coordinates roda2[128];
+	// circ_vertices(roda2, -0.45f, -0.97f, 0.05f, 128);
 
-	while (!glfwWindowShouldClose(window))
-	{
+	// //boneco
+	// coordinates cabeca[128];
+	// circ_vertices(cabeca, 0.7f, -0.6f, 0.1f, 128);
+	// coordinates corpo[128];
+	// circ_vertices(corpo, 0.7f, -0.8f, 0.2f, 128);
+	// coordinates olho1[128];
+	// circ_vertices(olho1, 0.625f, -0.6f, 0.05f, 128);
+	// coordinates olho2[128];
+	// circ_vertices(olho2, 0.675f, -0.6f, 0.05f, 128);
+	// coordinates miolho1[128];
+	// circ_vertices(miolho1, 0.625f, -0.6f, 0.008f, 128);
+	// coordinates miolho2[128];
+	// circ_vertices(miolho2, 0.675f, -0.6f, 0.008f, 128);
+
+
+	loc = glGetUniformLocation(program, "mat_transformation");
+	
+	glObject quadr;
+	initializeObject(&quadr, sizeof(quadrado) / sizeof(quadrado[0]), loc, loc_color, desenhar_quadrado);
+	veccpy(quadr.vertices, quadr.number_vertices, quadrado, sizeof(quadrado) / sizeof(quadrado[0]));
+
+	// quadr.v0 = 1.0f;
+	// quadr.v1 = 0.0f;
+	// quadr.v2 = 0.0f;
+	// quadr.v3 = 1.0f;
+
+	// printf("\ntamanho: %d\n", quadr.number_vertices);
+	// for (int i = 0; i < sizeof(quadrado) / sizeof(quadrado[0]); i++) {
+	// 	printf("%f , %f\n", quadr.vertices[i].x, quadr.vertices[i].y);
+	// }
+
+	// printf("\n");
+	// quadr.transform(&quadr);
+	// printf("\n");
+
+	while (!glfwWindowShouldClose(window)) {
 
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(1.0, 1.0, 1.0, 1.0);
 
-		loc = glGetUniformLocation(program, "mat_transformation");
+		quadr.loadBuffer(&quadr);
+		quadr.transform(&quadr);
+		quadr.color(&quadr);
+		quadr.draw();
 
-		float escala[] = scale_matrix(s,s,1);
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
+		// glObject *o = &quadr;
+
+		// glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(coordinates), o->vertices, GL_DYNAMIC_DRAW);
+
+		// // glUniformMatrix4fv(o->gltransformation, 1, GL_TRUE, transformation);
+		// float trans[] = translation_matrix(0.0f,0.0f,0.0f);
+		// glUniformMatrix4fv(loc, 1, GL_TRUE, trans);
+		// glUniform4f(o->glcolor, o->v0, o->v1, o->v2, o->v3);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		glfwSwapBuffers(window);
+
+		// float escala[] = scale_matrix(s,s,1);
+		// glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(coordinates), estrela, GL_DYNAMIC_DRAW);
 		// glUniformMatrix4fv(loc, 1, GL_TRUE, escala);
 		// glUniform4f(loc_color, 1.0, 1.0, 0.0, 1.0);
 		// glDrawArrays(GL_TRIANGLES, 0, 3);
 		// glDrawArrays(GL_TRIANGLES, 3, 3);
-		desenha_estrela(estrela, loc, loc_color, escala);
+		// // desenha_estrela(estrela, loc, loc_color, escala);
 
-		//casa
-		float mat_rotation[16] = rotation_z_matrix(theta);
-		// glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(paredes), paredes, GL_DYNAMIC_DRAW);
+		// //casa
+		// float mat_rotation[16] = rotation_z_matrix(theta);
+		// // glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
+		// // glBufferData(GL_ARRAY_BUFFER, sizeof(paredes), paredes, GL_DYNAMIC_DRAW);
+		// // glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
+		// // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// // glBufferData(GL_ARRAY_BUFFER, sizeof(janela_esquerda), janela_esquerda, GL_DYNAMIC_DRAW);
+		// // glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// // glBufferData(GL_ARRAY_BUFFER, sizeof(janela_direita), janela_direita, GL_DYNAMIC_DRAW);
+		// // glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// // glBufferData(GL_ARRAY_BUFFER, sizeof(porta), porta, GL_DYNAMIC_DRAW);
+		// // glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// // glBufferData(GL_ARRAY_BUFFER, sizeof(telhado), telhado, GL_DYNAMIC_DRAW);
+		// // glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// // glDrawArrays(GL_TRIANGLES, 0, 3);
+		// desenha_casa(paredes, janela_esquerda, janela_direita, porta, telhado, loc, loc_color, mat_rotation);
+
+		// float mat_rotation2[16] = rotation_z_matrix(0.0f);
+		// glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation2);
+
+		// //foguete
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(corpo_f), corpo_f, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(janela_f), janela_f, GL_DYNAMIC_DRAW);
 		// glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
-		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(janela_esquerda), janela_esquerda, GL_DYNAMIC_DRAW);
-		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(janela_direita), janela_direita, GL_DYNAMIC_DRAW);
-		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(porta), porta, GL_DYNAMIC_DRAW);
-		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(telhado), telhado, GL_DYNAMIC_DRAW);
-		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(triangulos_f), triangulos_f, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
 		// glDrawArrays(GL_TRIANGLES, 0, 3);
-		desenha_casa(paredes, janela_esquerda, janela_direita, porta, telhado, loc, loc_color, mat_rotation);
-
-		float mat_rotation2[16] = rotation_z_matrix(0.0f);
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation2);
-
-		//foguete
-		glBufferData(GL_ARRAY_BUFFER, sizeof(corpo_f), corpo_f, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(janela_f), janela_f, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(triangulos_f), triangulos_f, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_TRIANGLES, 3, 3);
-		glDrawArrays(GL_TRIANGLES, 6, 3);
+		// glDrawArrays(GL_TRIANGLES, 3, 3);
+		// glDrawArrays(GL_TRIANGLES, 6, 3);
 
 
-		//carro
-		glBufferData(GL_ARRAY_BUFFER, sizeof(lataria_c), lataria_c, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// //carro
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(lataria_c), lataria_c, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(roda1), roda1, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(roda1), roda1, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(roda2), roda2, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(roda2), roda2, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
 
-		//boneco
-		glBufferData(GL_ARRAY_BUFFER, sizeof(cabeca), cabeca, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// //boneco
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(cabeca), cabeca, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(corpo), corpo, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(corpo), corpo, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(olho1), olho1, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(olho1), olho1, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(olho2), olho2, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(olho2), olho2, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(miolho1), miolho1, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(miolho1), miolho1, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(miolho2), miolho2, GL_DYNAMIC_DRAW);
-		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
-		glfwSwapBuffers(window);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(miolho2), miolho2, GL_DYNAMIC_DRAW);
+		// glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+		// glfwSwapBuffers(window);
 
 	}
 
@@ -345,39 +388,5 @@ void circ_vertices(coordinates *v, float x, float y, float r, unsigned q) {
 		v[i].x = dx;
 		v[i].y = dy;
 	}
-}
-
-void multiplica(float *m1, float *m2, float *m_resultado){
-
-    float m_a[4][4];
-    float m_b[4][4];
-    float m_c[4][4]; // m_c = m_a * m_b
-
-    int n = 0;
-    for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            m_a[i][j] = m1[n];
-            m_b[i][j] = m2[n];
-            n += 1;
-        }
-    }
-
-
-    for (int i = 0; i < 4 ; i++){    
-        for (int j = 0; j < 4 ; j++){
-            m_c[i][j] = 0.0f;
-            for(int k = 0; k < 4; k++){
-                m_c[i][j] += m_a[i][k] * m_b[k][j];    
-            }
-        }
-    }
-
-    n = 0;
-    for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            m_resultado[n] = m_c[i][j];
-            n += 1;
-        }
-    }
 }
 
