@@ -178,7 +178,7 @@ int main(void){
 	GLint loc = glGetAttribLocation(program, "position");
 	glEnableVertexAttribArray(loc);
 
-	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, sizeof(coordinates), (void*) 0); // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
+	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, sizeof(coordinates), (void*) 0); 
 
 
 	GLint loc_color = glGetUniformLocation(program, "color");
