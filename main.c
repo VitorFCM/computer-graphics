@@ -142,24 +142,20 @@ int main(void){
 	glUseProgram(program);
 
 
-	// Preparando dados para enviar a GPU
 
-	coordinates estrela[6] = coordinates_estrela;
-	coordinates casa[19] = coordinates_casa;
 
 	GLuint buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
 
-	// Abaixo, nós enviamos todo o conteúdo da variável vertices.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(casa), casa, GL_DYNAMIC_DRAW);
 
 
 	// Associando variáveis do programa GLSL (Vertex Shaders) com nossos dados
 	GLint loc = glGetAttribLocation(program, "position");
 	glEnableVertexAttribArray(loc);
+
+	coordinates estrela[6] = coordinates_estrela;
 	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, sizeof(estrela[0]), (void*) 0); // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
 
 
@@ -171,6 +167,12 @@ int main(void){
 	// Exibindo nossa janela
 	glfwShowWindow(window);
 
+	coordinates paredes[4] = paredes_casa;
+	coordinates janela_esquerda[4] = janela_esq;
+	coordinates janela_direita[4] = janela_dir;
+	coordinates porta[4] = porta_casa;
+	coordinates telhado[3] = telhado_casa;
+
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -181,6 +183,7 @@ int main(void){
 
 		loc = glGetUniformLocation(program, "mat_transformation");
 
+		//estrela
 		float mat_translation[16] = translation_matrix(t_x,t_y,0);
 		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_translation);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
@@ -188,19 +191,24 @@ int main(void){
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLES, 3, 3);
 
+		//casa
 		float mat_rotation[16] = rotation_z_matrix(theta);
 		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(casa), casa, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(paredes), paredes, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(janela_esquerda), janela_esquerda, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(janela_direita), janela_direita, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(porta), porta, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(telhado), telhado, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
-		glDrawArrays(GL_TRIANGLES, 16, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwSwapBuffers(window);
 
