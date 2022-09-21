@@ -9,33 +9,33 @@
 #include <stdio.h>
 #include <math.h>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h> /* verifique no seu SO onde fica o glfw3.h */
+#include <GLFW/glfw3.h>
 #include "globjects.h"
 #include "formas.h"
 
 #define GLFW_INCLUDE_NONE
 
 #define translation_matrix(t_x,t_y,t_z) {   \
-            1.0f, 0.0f, 0.0f, t_x,          \
-            0.0f, 1.0f, 0.0f, t_y,          \
-            0.0f, 0.0f, 1.0f, t_z,          \
-            0.0f, 0.0f, 0.0f, 1.0f          \
-        }                                   \
+	1.0f, 0.0f, 0.0f, t_x,          \
+	0.0f, 1.0f, 0.0f, t_y,          \
+	0.0f, 0.0f, 1.0f, t_z,          \
+	0.0f, 0.0f, 0.0f, 1.0f          \
+}                                   \
 
 #define rotation_z_matrix(theta) {                                                  \
-            cos(((theta)*M_PI/180.0)), -sin(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
-            sin(((theta)*M_PI/180.0)),  cos(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
-            0.0f, 0.0f, 1.0f, 0.0f,                                                 \
-            0.0f, 0.0f, 0.0f, 1.0f                                                  \
-        }
-        
+	cos(((theta)*M_PI/180.0)), -sin(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
+	sin(((theta)*M_PI/180.0)),  cos(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
+	0.0f, 0.0f, 1.0f, 0.0f,                                                 \
+	0.0f, 0.0f, 0.0f, 1.0f                                                  \
+}
+
 #define scale_matrix(s_x,s_y,s_z) {     \
-            s_x, 0.0f, 0.0f, 0.0f,      \
-            0.0f, s_y, 0.0f, 0.0f,      \
-            0.0f, 0.0f, s_z, 0.0f,      \
-            0.0f, 0.0f, 0.0f, 1.0f      \
-        }                               \
-                                        \
+	s_x, 0.0f, 0.0f, 0.0f,      \
+	0.0f, s_y, 0.0f, 0.0f,      \
+	0.0f, 0.0f, s_z, 0.0f,      \
+	0.0f, 0.0f, 0.0f, 1.0f      \
+}                               \
+\
 
 void circ_vertices(coordinates *v, float x, float y, float r, unsigned q) {
 
@@ -213,6 +213,27 @@ int main(void){
 	coordinates janela_f[128];
 	circ_vertices(janela_f, 0.0f, 0.125f, 0.05f, 128);
 
+	//carro
+	coordinates lataria_c[] = lataria_carro(0, 0.0);
+	coordinates roda1[128];
+	circ_vertices(roda1, -0.85f, -0.97f, 0.05f, 128);
+	coordinates roda2[128];
+	circ_vertices(roda2, -0.45f, -0.97f, 0.05f, 128);
+
+	//boneco
+	coordinates cabeca[128];
+	circ_vertices(cabeca, 0.7f, -0.6f, 0.1f, 128);
+	coordinates corpo[128];
+	circ_vertices(corpo, 0.7f, -0.8f, 0.2f, 128);
+	coordinates olho1[128];
+	circ_vertices(olho1, 0.625f, -0.6f, 0.05f, 128);
+	coordinates olho2[128];
+	circ_vertices(olho2, 0.675f, -0.6f, 0.05f, 128);
+	coordinates miolho1[128];
+	circ_vertices(miolho1, 0.625f, -0.6f, 0.008f, 128);
+	coordinates miolho2[128];
+	circ_vertices(miolho2, 0.675f, -0.6f, 0.008f, 128);
+
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -250,6 +271,9 @@ int main(void){
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		float mat_rotation2[16] = rotation_z_matrix(0.0f);
+		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation2);
+
 		//foguete
 		glBufferData(GL_ARRAY_BUFFER, sizeof(corpo_f), corpo_f, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
@@ -264,6 +288,46 @@ int main(void){
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLES, 3, 3);
 		glDrawArrays(GL_TRIANGLES, 6, 3);
+
+
+		//carro
+		glBufferData(GL_ARRAY_BUFFER, sizeof(lataria_c), lataria_c, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(roda1), roda1, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(roda2), roda2, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+
+		//boneco
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cabeca), cabeca, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(corpo), corpo, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(olho1), olho1, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(olho2), olho2, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(miolho1), miolho1, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(miolho2), miolho2, GL_DYNAMIC_DRAW);
+		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 		glfwSwapBuffers(window);
 
 	}
