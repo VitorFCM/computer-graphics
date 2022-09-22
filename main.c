@@ -205,7 +205,7 @@ int main(void){
 	coordinates janela_f[128];
 	circ_vertices(janela_f, 0.0f, 0.125f, 0.05f, 128);
 
-	//carro
+	//skate
 	coordinates lataria_c[] = lataria_carro(0, 0.0);
 	coordinates roda1[128];
 	circ_vertices(roda1, -0.85f, -0.97f, 0.05f, 128);
@@ -232,11 +232,11 @@ int main(void){
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(1.0, 1.0, 1.0, 1.0);
+		glClearColor(0.3, 0.3, 0.3, 1.0);
 
 		loc = glGetUniformLocation(program, "mat_transformation");
-
 		float escala[] = scale_matrix(s,s,1);
+
 		glBufferData(GL_ARRAY_BUFFER, sizeof(estrela), estrela, GL_DYNAMIC_DRAW);
 		glUniformMatrix4fv(loc, 1, GL_TRUE, escala);
 		glUniform4f(loc_color, 1.0, 1.0, 0.0, 1.0);
@@ -246,6 +246,7 @@ int main(void){
 		//casa
 		float mat_rotation[16] = rotation_z_matrix(theta);
 		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation);
+
 		glBufferData(GL_ARRAY_BUFFER, sizeof(paredes), paredes, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 0.0, 0.0, 1.0, 1.0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -264,7 +265,6 @@ int main(void){
 
 		float mat_rotation2[16] = rotation_z_matrix(0.0f);
 		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_rotation2);
-
 		//foguete
 		glBufferData(GL_ARRAY_BUFFER, sizeof(corpo_f), corpo_f, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
@@ -281,7 +281,7 @@ int main(void){
 		glDrawArrays(GL_TRIANGLES, 6, 3);
 
 
-		//carro
+		//skate
 		glBufferData(GL_ARRAY_BUFFER, sizeof(lataria_c), lataria_c, GL_DYNAMIC_DRAW);
 		glUniform4f(loc_color, 1.0, 0.0, 0.0, 1.0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -294,6 +294,9 @@ int main(void){
 		glUniform4f(loc_color, 0.0, 0.0, 0.0, 1.0);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 128);
 
+
+		float mat_translation[16] = translation_matrix(t_x, t_y, 0.0f);
+		glUniformMatrix4fv(loc, 1, GL_TRUE, mat_translation);
 
 		//boneco
 		glBufferData(GL_ARRAY_BUFFER, sizeof(cabeca), cabeca, GL_DYNAMIC_DRAW);
@@ -347,35 +350,35 @@ void circ_vertices(coordinates *v, float x, float y, float r, unsigned q) {
 
 void multiplica(float *m1, float *m2, float *m_resultado){
 
-    float m_a[4][4];
-    float m_b[4][4];
-    float m_c[4][4]; // m_c = m_a * m_b
+	float m_a[4][4];
+	float m_b[4][4];
+	float m_c[4][4]; // m_c = m_a * m_b
 
-    int n = 0;
-    for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            m_a[i][j] = m1[n];
-            m_b[i][j] = m2[n];
-            n += 1;
-        }
-    }
+	int n = 0;
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			m_a[i][j] = m1[n];
+			m_b[i][j] = m2[n];
+			n += 1;
+		}
+	}
 
 
-    for (int i = 0; i < 4 ; i++){    
-        for (int j = 0; j < 4 ; j++){
-            m_c[i][j] = 0.0f;
-            for(int k = 0; k < 4; k++){
-                m_c[i][j] += m_a[i][k] * m_b[k][j];    
-            }
-        }
-    }
+	for (int i = 0; i < 4 ; i++){
+		for (int j = 0; j < 4 ; j++){
+			m_c[i][j] = 0.0f;
+			for(int k = 0; k < 4; k++){
+				m_c[i][j] += m_a[i][k] * m_b[k][j];
+			}
+		}
+	}
 
-    n = 0;
-    for (int i = 0; i < 4; i++){
-        for (int j = 0; j < 4; j++){
-            m_resultado[n] = m_c[i][j];
-            n += 1;
-        }
-    }
+	n = 0;
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			m_resultado[n] = m_c[i][j];
+			n += 1;
+		}
+	}
 }
 
