@@ -3,5 +3,6 @@
 
 #include "globjects.h"
 
-void desenhar_quadrado();
+vertices* vertices_retangulo(float altura, float largura);
+void desenhar_retangulo();
 #endif

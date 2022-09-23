@@ -28,15 +28,21 @@ typedef struct coordinates {
     float x, y;
 } coordinates;
 
+typedef struct vertices {
+    unsigned int number;
+    coordinates *v;
+} vertices;
+
 typedef struct glObject glObject;
 
 typedef struct glObject {
 
     GLint gltransformation;
     GLint glcolor;
-    
-    unsigned int number_vertices;
-    coordinates *vertices;
+
+    vertices *vertices;
+//    unsigned int number_vertices;
+//    coordinates *vertices;
 
     float t_x;
     float t_y;
@@ -67,12 +73,15 @@ typedef struct glObject {
     void (*loadBuffer)(glObject *o);
     void (*transform)(glObject *o);
     void (*color)(glObject *o);
+    void (*render)(glObject *o);
     void (*draw)();
 
 } glObject;
 
 
-void initializeObject(glObject *o, unsigned int number_verticex, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o));
+//void initializeObject(glObject *o, coordinates *vertices, unsigned int number_verticex, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o));
+void initializeObject(glObject *o, vertices *v, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o));
+
 // void destroyObject(glObject *o);
 // void loadBuffer(glObject *o);
 // void transform(glObject *o, float x, float y, float z);

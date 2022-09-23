@@ -9,16 +9,19 @@ void destroyObject(glObject *o);
 void loadBuffer(glObject *o);
 void transform(glObject *o);
 void color(glObject *o);
+void render(glObject *o);
 
-void initializeObject(glObject *o, unsigned int number_verticex, GLint gltransformation, GLint glcolor, void (*draw)()) {
+void initializeObject(glObject *o, vertices *v, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o)) {
 
     if (o == NULL) return;
 
     o->gltransformation = gltransformation;
     o->glcolor = glcolor;
 
-    o->number_vertices = number_verticex;
-    o->vertices = (coordinates*) malloc(sizeof(coordinates) * number_verticex);
+    o->vertices = v;
+//    o->number_vertices = number_verticex;
+//    o->vertices = vertices;
+//    o->vertices = (coordinates*) malloc(sizeof(coordinates) * number_verticex);
 
     o->ref_rotation = 0;
     o->ref_rotation_x = o->ref_rotation_y = o->ref_rotation_z = 0.0f;
@@ -37,6 +40,7 @@ void initializeObject(glObject *o, unsigned int number_verticex, GLint gltransfo
     o->loadBuffer = loadBuffer;
     o->transform = transform;
     o->color = color;
+    o->render = render;
     o->draw = draw;
 }
 
@@ -46,7 +50,8 @@ void destroyObject(glObject *o) {
 
 void loadBuffer(glObject *o) {
     if (o == NULL) return;
-    glBufferData(GL_ARRAY_BUFFER, o->number_vertices * sizeof(coordinates), o->vertices, GL_DYNAMIC_DRAW);
+//    glBufferData(GL_ARRAY_BUFFER, o->number_vertices * sizeof(coordinates), o->vertices, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, o->vertices->number * sizeof(coordinates), o->vertices->v, GL_DYNAMIC_DRAW);
 }
 
 void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
@@ -99,6 +104,15 @@ void color(glObject *o) {
 
     if (o == NULL) return;
     glUniform4f(o->glcolor, o->v0, o->v1, o->v2, o->v3);
+}
+
+void render(glObject *o) {
+
+    if (o == NULL) return;
+    loadBuffer(o);
+    transform(o);
+    color(o);
+    o->draw();
 }
 
 void veccpy(coordinates *dest, unsigned int size_dest, coordinates *origin, unsigned int size_origin) {

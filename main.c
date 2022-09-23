@@ -78,7 +78,7 @@ int main(void){
 
 
 	// criando uma janela
-	GLFWwindow* window = glfwCreateWindow(1500, 1500, "Minha Janela", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(800, 800, "Minha Janela", NULL, NULL);
 
 
 	// tornando a janela como principal
@@ -90,7 +90,7 @@ int main(void){
 
 
 	// GLSL para Vertex Shader
-	char* vertex_code =
+	const GLchar *vertex_code =
 		"attribute vec2 position;\n"
 		"uniform mat4 mat_transformation;\n"
 		"void main()\n"
@@ -99,7 +99,7 @@ int main(void){
 		"}\n";
 
 	// GLSL para Fragment Shader
-	char* fragment_code =
+	const GLchar *fragment_code =
 		"uniform vec4 color;\n"
 		"void main()\n"
 		"{\n"
@@ -131,7 +131,7 @@ int main(void){
 		glGetShaderInfoLog(vertex, infoLength, NULL, info);
 
 		printf("Erro de compilacao no Vertex Shader.\n");
-		printf("--> %s\n",&info);
+		printf("--> %s\n", info);
 
 	}
 
@@ -153,7 +153,7 @@ int main(void){
 		glGetShaderInfoLog(fragment, infoLength, NULL, info);
 
 		printf("Erro de compilacao no Fragment Shader.\n");
-		printf("--> %s\n",&info);
+		printf("--> %s\n", info);
 
 	}
 
@@ -193,12 +193,12 @@ int main(void){
 	// veccpy(estrela, 6, star, 6);
 	// printf("\nest: %ld | star: %ld\n", sizeof(estrela), sizeof(star));
 
-	coordinates quadrado[] = {
-		{0.5f,0.5f},
-		{0.5f,-0.5f},
-		{-0.5f,-0.5f},
-		{-0.5f,0.5f}
-	};
+//	coordinates quadrado[] = {
+//            {0.5f,0.5f},
+//            {0.5f,-0.5f},
+//            {-0.5f,0.5f},
+//            {-0.5f,-0.5f}
+//	};
 
 	// //casa
 	// coordinates paredes[] = paredes_casa;
@@ -238,8 +238,8 @@ int main(void){
 	loc = glGetUniformLocation(program, "mat_transformation");
 	
 	glObject quadr;
-	initializeObject(&quadr, sizeof(quadrado) / sizeof(quadrado[0]), loc, loc_color, desenhar_quadrado);
-	veccpy(quadr.vertices, quadr.number_vertices, quadrado, sizeof(quadrado) / sizeof(quadrado[0]));
+	initializeObject(&quadr, vertices_retangulo(0.4f, 1.0f), loc, loc_color, desenhar_retangulo);
+//	veccpy(quadr.vertices, quadr.number_vertices, quadrado, sizeof(quadrado) / sizeof(quadrado[0]));
 
 	// quadr.v0 = 1.0f;
 	// quadr.v1 = 0.0f;
@@ -262,10 +262,7 @@ int main(void){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(1.0, 1.0, 1.0, 1.0);
 
-		quadr.loadBuffer(&quadr);
-		quadr.transform(&quadr);
-		quadr.color(&quadr);
-		quadr.draw();
+		quadr.render(&quadr);
 
 		// glObject *o = &quadr;
 
