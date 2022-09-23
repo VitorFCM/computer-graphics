@@ -6,8 +6,5 @@
 #define KEY_UP_ARROW    265
 #define KEY_DOWN_ARROW  264
 
-typedef struct controller {
 
-
-} controller;
 #endif

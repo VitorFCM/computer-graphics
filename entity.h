@@ -22,9 +22,26 @@ typedef struct AttachedObject {
 
 typedef struct Entity Entity;
 
+typedef struct AttachedEntity {
+
+    Entity *entity;
+
+    float t_x;
+    float t_y;
+    float t_z;
+
+    float s_x;
+    float s_y;
+    float s_z;
+
+    float theta_z;
+
+} AttachedEntity;
+
 typedef struct Entity {
 
     LinkedList objects;
+    LinkedList entities;
 
     float t_x;
     float t_y;
@@ -47,6 +64,7 @@ typedef struct Entity {
     float theta_z;
 
     void (*addGlObject)(Entity *e, glObject *o);
+    void (*addEntity)(Entity *e, Entity *attached, float attachment_x, float attachment_y);
     void (*render)();
 
 } Entity;

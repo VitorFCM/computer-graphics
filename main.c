@@ -137,11 +137,25 @@ int main(void){
     circle.v1 = 1.0f;
     circle.t_y = 0.25;
 
+    glObject quadr2;
+    initializeObject(&quadr2, vertices_rectangle(0.5f, 0.1f), loc, loc_color, draw_rectangle);
+    glObject circle2;
+    initializeObject(&circle2, vertices_circle(0.1f), loc, loc_color, draw_circle);
+
+    circle2.v1 = 1.0f;
+    circle2.t_y = 0.25;
 
     Entity entity;
     initializeEntity(&entity);
     entity.addGlObject(&entity, &quadr);
     entity.addGlObject(&entity, &circle);
+
+    Entity entity2;
+    initializeEntity(&entity2);
+    entity.addGlObject(&entity2, &quadr2);
+    entity.addGlObject(&entity2, &circle2);
+
+    entity2.theta_z = -45.0f;
 
 //    entity.theta_z = 45.0f;
 //    entity.t_x = 0.5f;
@@ -156,6 +170,8 @@ int main(void){
 		glClearColor(1.0, 1.0, 1.0, 1.0);
 
         entity.render(&entity);
+        entity2.render(&entity2);
+
 		glfwSwapBuffers(window);
 	}
 
