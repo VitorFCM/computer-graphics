@@ -17,29 +17,48 @@
 
 #define GLFW_INCLUDE_NONE
 
-float t_x = 0.0f;
-float t_y = 0.0f;
+Entity e;
 
-float theta = 0.0f;
+void controller(Entity *e, int key, int action);
 
-float s = 1.0f;
+void controller(Entity *e, int key, int action) {
+
+    float dt = 0.01f;
+    float dtheta = 0.5f;
+
+    switch (key) {
+
+        case GLFW_KEY_UP:
+            e->t_y += dt;
+            break;
+        case GLFW_KEY_DOWN:
+            e->t_y -= dt;
+            break;
+        case GLFW_KEY_LEFT:
+            e->t_x -= dt;
+            break;
+        case GLFW_KEY_RIGHT:
+            e->t_x += dt;
+            break;
+        case GLFW_KEY_Q:
+            e->theta_z += dtheta;
+            break;
+        case GLFW_KEY_E:
+            e->theta_z -= dtheta;
+            break;
+
+        default:
+            break;
+
+    }
+}
 
 
 // funcao para processar eventos de teclado
 static void key_event(GLFWwindow* window, int key, int scancode, int action, int mods){
 	printf("Pressionando tecla %d\n", key);
 
-	if(key==262) t_x += 0.01; // tecla para direita
-	if(key==263) t_x -= 0.01; // tecla para direita
-
-	if(key==265) t_y += 0.01; // tecla para cima
-	if(key==264) t_y -= 0.01; // tecla para baixo
-
-	if(key == 81) theta += 1.0f; // Q
-	if(key == 69) theta -= 1.0f; // E
-
-	if (key == 73) s += 0.01f; // I
-	if (key == 79) s -= 0.01f; // O
+    controller(&e, key, action);
 }
 
 
@@ -157,6 +176,11 @@ int main(void){
 
     entity2.theta_z = -45.0f;
 
+    initializeEntity(&e);
+    e.addEntity(&e, &entity, 0.0f, 0.0f);
+    e.addEntity(&e, &entity2, 0.0f, 0.0f);
+//    e.setController(&e, controller);
+
 //    entity.theta_z = 45.0f;
 //    entity.t_x = 0.5f;
 
@@ -169,8 +193,9 @@ int main(void){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(1.0, 1.0, 1.0, 1.0);
 
-        entity.render(&entity);
-        entity2.render(&entity2);
+//        entity.render(&entity);
+//        entity2.render(&entity2);
+        e.render(&e);
 
 		glfwSwapBuffers(window);
 	}

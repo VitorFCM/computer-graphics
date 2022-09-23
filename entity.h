@@ -63,8 +63,11 @@ typedef struct Entity {
 
     float theta_z;
 
+    void (*controller)(Entity *e, int key, int action);
+
     void (*addGlObject)(Entity *e, glObject *o);
     void (*addEntity)(Entity *e, Entity *attached, float attachment_x, float attachment_y);
+    void (*setController)(Entity *e, void (*controller)(Entity *e, int key, int action));
     void (*render)();
 
 } Entity;

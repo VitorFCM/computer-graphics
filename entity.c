@@ -85,6 +85,12 @@ void addEntity(Entity *e, Entity *attached, float attachment_x, float attachment
     e->objects.add(&e->entities, ae);
 }
 
+void setController(Entity *e, void (*controller)(Entity *e, int key, int action)) {
+
+    if (e == NULL) return;
+    e->controller = controller;
+}
+
 void renderEntity(Entity *e) {
 
     Node *nodeObj = e->objects.head;
