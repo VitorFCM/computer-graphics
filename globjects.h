@@ -41,8 +41,6 @@ typedef struct glObject {
     GLint glcolor;
 
     vertices *vertices;
-//    unsigned int number_vertices;
-//    coordinates *vertices;
 
     float t_x;
     float t_y;
@@ -90,4 +88,5 @@ void initializeObject(glObject *o, vertices *v, GLint gltransformation, GLint gl
 /* ---------------------------------------- */
 void veccpy(coordinates *dest, unsigned int size_dest, coordinates *origin, unsigned int size_origin);
 coordinates* veccnt(coordinates *c1, unsigned int size_1, coordinates *c2, unsigned int size_2);
+
 #endif
