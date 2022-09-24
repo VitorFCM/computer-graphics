@@ -24,6 +24,9 @@
             0.0f, 0.0f, 0.0f, 1.0f      \
         }                               \
 
+#define TRANSFORMATION_IN_PLACE       0
+#define TRANSFORMATION_IN_REFERENCE   1
+
 typedef struct coordinates {
     float x, y;
 } coordinates;
@@ -77,13 +80,7 @@ typedef struct glObject {
 } glObject;
 
 
-//void initializeObject(glObject *o, coordinates *vertices, unsigned int number_verticex, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o));
-void initializeObject(glObject *o, vertices *v, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o));
-
-// void destroyObject(glObject *o);
-// void loadBuffer(glObject *o);
-// void transform(glObject *o, float x, float y, float z);
-// void color(glObject *o, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+void initializeObject(glObject *o, vertices *v, void (*draw)(glObject *o));
 
 /* ---------------------------------------- */
 void veccpy(coordinates *dest, unsigned int size_dest, coordinates *origin, unsigned int size_origin);

@@ -4,6 +4,7 @@
 
 void addGlObject(Entity *e, glObject *o);
 void addEntity(Entity *e, Entity *attached, float attachment_x, float attachment_y);
+void setController(Entity *e, void (*controller)(Entity *e, int key, int action));
 void renderEntity(Entity *e);
 
 void initializeEntity(Entity *e) {
@@ -11,10 +12,10 @@ void initializeEntity(Entity *e) {
     initializeLinkedList(&e->objects);
     initializeLinkedList(&e->entities);
 
-    e->ref_rotation = 0;
+    e->ref_rotation = TRANSFORMATION_IN_PLACE;
     e->ref_rotation_x = e->ref_rotation_y = e->ref_rotation_z = 0.0f;
 
-    e->ref_scale = 0;
+    e->ref_scale = TRANSFORMATION_IN_PLACE;
     e->ref_scale_x = e->ref_scale_y = e->ref_scale_z = 0.0f;
 
     e->t_x = e->t_y = e->t_z = 0.0f;
@@ -24,7 +25,11 @@ void initializeEntity(Entity *e) {
 
     e->addGlObject = addGlObject;
     e->addEntity = addEntity;
+    e->setController = setController;
     e->render = renderEntity;
+
+
+    e->controller = NULL;
 }
 
 void addGlObject(Entity *e, glObject *o) {
@@ -43,12 +48,12 @@ void addGlObject(Entity *e, glObject *o) {
 
     ao->theta_z = o->theta_z;
 
-    o->ref_scale = 1;
+    o->ref_scale = TRANSFORMATION_IN_REFERENCE;
     o->ref_scale_x = e->t_x;
     o->ref_scale_y = e->t_y;
     o->ref_scale_z = e->t_z;
 
-    o->ref_rotation = 1;
+    o->ref_rotation = TRANSFORMATION_IN_REFERENCE;
     o->ref_rotation_x = e->t_x;
     o->ref_rotation_y = e->t_y;
     o->ref_rotation_z = e->t_z;
@@ -72,17 +77,17 @@ void addEntity(Entity *e, Entity *attached, float attachment_x, float attachment
 
     ae->theta_z = attached->theta_z;
 
-    attached->ref_scale = 1;
+    attached->ref_scale = TRANSFORMATION_IN_REFERENCE;
     attached->ref_scale_x = e->t_x;
     attached->ref_scale_y = e->t_y;
     attached->ref_scale_z = e->t_z;
 
-    attached->ref_rotation = 1;
+    attached->ref_rotation = TRANSFORMATION_IN_REFERENCE;
     attached->ref_rotation_x = attachment_x;
     attached->ref_rotation_y = attachment_y;
     attached->ref_rotation_z = e->t_z;
 
-    e->objects.add(&e->entities, ae);
+    e->entities.add(&e->entities, ae);
 }
 
 void setController(Entity *e, void (*controller)(Entity *e, int key, int action)) {
@@ -92,6 +97,34 @@ void setController(Entity *e, void (*controller)(Entity *e, int key, int action)
 }
 
 void renderEntity(Entity *e) {
+
+    Node *nodeEnt = e->entities.head;
+
+    while (nodeEnt != NULL) {
+
+        AttachedEntity *ae = (AttachedEntity*) nodeEnt->data;
+
+        ae->entity->t_x = e->t_x + ae->t_x;
+        ae->entity->t_y = e->t_y + ae->t_y;
+        ae->entity->t_z = e->t_z + ae->t_z;
+
+        ae->entity->s_x = e->s_x * ae->s_x;
+        ae->entity->s_y = e->s_y * ae->s_y;
+        ae->entity->s_z = e->s_z * ae->s_z;
+
+        ae->entity->theta_z = e->theta_z + ae->theta_z;
+
+        ae->entity->ref_scale_x = e->t_x;
+        ae->entity->ref_scale_y = e->t_y;
+        ae->entity->ref_scale_z = e->t_z;
+
+        ae->entity->ref_rotation_x = e->t_x + ae->entity->ref_rotation_x;
+        ae->entity->ref_rotation_y = e->t_y + ae->entity->ref_rotation_y;
+        ae->entity->ref_rotation_z = e->t_z + ae->entity->ref_rotation_z;
+
+        ae->entity->render(ae->entity);
+        nodeEnt = nodeEnt->next;
+    }
 
     Node *nodeObj = e->objects.head;
 
@@ -122,31 +155,4 @@ void renderEntity(Entity *e) {
         nodeObj = nodeObj->next;
     }
 
-    Node *nodeEnt = e->entities.head;
-
-    while (nodeEnt != NULL) {
-
-        AttachedEntity *ae = (AttachedEntity*) nodeEnt->data;
-
-        ae->entity->t_x = e->t_x + ae->t_x;
-        ae->entity->t_y = e->t_y + ae->t_y;
-        ae->entity->t_z = e->t_z + ae->t_z;
-
-        ae->entity->s_x = e->s_x * ae->s_x;
-        ae->entity->s_y = e->s_y * ae->s_y;
-        ae->entity->s_z = e->s_z * ae->s_z;
-
-        ae->entity->theta_z = e->theta_z + ae->theta_z;
-
-        ae->entity->ref_scale_x = e->t_x;
-        ae->entity->ref_scale_y = e->t_y;
-        ae->entity->ref_scale_z = e->t_z;
-
-        ae->entity->ref_rotation_x = e->t_x + ae->entity->ref_rotation_x;
-        ae->entity->ref_rotation_y = e->t_y + ae->entity->ref_rotation_y;
-        ae->entity->ref_rotation_z = e->t_z + ae->entity->ref_rotation_z;
-
-        ae->entity->render(ae->entity);
-        nodeEnt = nodeEnt->next;
-    }
 }
