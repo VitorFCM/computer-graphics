@@ -1,5 +1,5 @@
-#ifndef FILESTRUCTS_H
-#define FILESTRUCTS_H
+#ifndef FILE_STRUCTS_H
+#define FILE_STRUCTS_H
 
 //The objHeader struct will be used to inform
 //the file reader function about how many coordinates
