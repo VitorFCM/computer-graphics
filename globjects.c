@@ -13,6 +13,13 @@ void render(glObject *o);
 
 void multiplica(float *m1, float *m2, float *m_resultado);
 
+/**
+ * Inicializa um objeto. Todos os objetos na aplicação precisam ter seus vértices informados
+ * juntamente com a função que os controem.
+ * @param o objeto a ser inicializado.
+ * @param v vértices do objeto.
+ * @param draw função que irá desenhar o objeto.
+ */
 void initializeObject(glObject *o, vertices *v, void (*draw)(glObject *o)) {
 
     if (o == NULL) return;
@@ -47,12 +54,22 @@ void destroyObject(glObject *o) {
     free(o->vertices);
 }
 
+/**
+ * Carrega os vértices do objeto no buffer da aplicação.
+ * @param o objeto.
+ */
 void loadBuffer(glObject *o) {
     if (o == NULL) return;
     glBufferData(GL_ARRAY_BUFFER, o->vertices->number * sizeof(coordinates), o->vertices->v, GL_DYNAMIC_DRAW);
 }
 
-void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
+/**
+ * Aplica uma transformação (composta por translação, rotação e escala) no objeto.
+ * A sequência de transformações é: translação -> rotação -> escala.
+ *
+ * @param o objeto que sofrerá a transformação.
+ */
+void transform(glObject *o) {
 
     if (o == NULL) return;
 
@@ -72,7 +89,6 @@ void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
     c_ref_sca_y = convertValue(o->ref_scale_y);
     c_ref_sca_z = convertValue(o->ref_scale_z);
 
-//    float transformation[] = translation_matrix(o->t_x,o->t_y,o->t_z);
     float transformation[] = translation_matrix(c_t_x,c_t_y,c_t_z);
 
     float dx, dy, dz;
@@ -115,12 +131,21 @@ void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
     glUniformMatrix4fv(o->gltransformation, 1, GL_TRUE, transformation);
 }
 
+/**
+ * Aplica a coloração no objeto.
+ * @param o objeto.
+ */
 void color(glObject *o) {
 
     if (o == NULL) return;
     glUniform4f(o->glcolor, o->v0, o->v1, o->v2, o->v3);
 }
 
+/**
+ * Renderiza o objeto, carregando seus vértices no buffer da aplicação, aplicando transformação e
+ * colorindo-o.
+ * @param o objeto a ser renderizado.
+ */
 void render(glObject *o) {
 
     if (o == NULL) return;

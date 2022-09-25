@@ -3,6 +3,9 @@
 
 #include <GL/glew.h>
 
+/**
+ * Matriz de translação: translada o objeto da origem até o ponto (t_x, t_y, t_z).
+ */
 #define translation_matrix(t_x,t_y,t_z) {   \
             1.0f, 0.0f, 0.0f, t_x,          \
             0.0f, 1.0f, 0.0f, t_y,          \
@@ -10,13 +13,19 @@
             0.0f, 0.0f, 0.0f, 1.0f          \
         }                                   \
 
+/**
+ * Matriz de rotação (eixo z): rotaciona o objeto em relação ao eixo z em theta graus.
+ */
 #define rotation_z_matrix(theta) {                                                  \
             cos(((theta)*M_PI/180.0)), -sin(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
             sin(((theta)*M_PI/180.0)),  cos(((theta)*M_PI/180.0)), 0.0f, 0.0f,      \
             0.0f, 0.0f, 1.0f, 0.0f,                                                 \
             0.0f, 0.0f, 0.0f, 1.0f                                                  \
         }
-        
+
+/**
+ * Matriz de escala: aplica escala no objeto.
+ */
 #define scale_matrix(s_x,s_y,s_z) {     \
             s_x, 0.0f, 0.0f, 0.0f,      \
             0.0f, s_y, 0.0f, 0.0f,      \
@@ -24,25 +33,44 @@
             0.0f, 0.0f, 0.0f, 1.0f      \
         }                               \
 
+/**
+ * A transformação (rotação ou escala) ocorre em relação à coordenada do objeto.
+ */
 #define TRANSFORMATION_IN_PLACE       0
+
+/**
+ * A transformação (rotação ou escala) ocorre em relação à um ponto de referência.
+ */
 #define TRANSFORMATION_IN_REFERENCE   1
 
+/**
+ * Estrutura para armazenar as coordenadas dos vértices dos objetos.
+ */
 typedef struct coordinates {
     float x, y;
 } coordinates;
 
+/**
+ * Estrutura que representa os vértices de um determinado objeto.
+ */
 typedef struct vertices {
     unsigned int number;
     coordinates *v;
 } vertices;
 
+/**
+ * Estrutura responsável pelos objetos que serão desenhados na janela da aplicação.
+ */
 typedef struct glObject glObject;
 
-typedef struct glObject {
+struct glObject {
 
     GLint gltransformation;
     GLint glcolor;
 
+    /**
+     * Vértices que compoẽm o objeto em questão.
+     */
     vertices *vertices;
 
     float t_x;
@@ -77,7 +105,7 @@ typedef struct glObject {
     void (*render)(glObject *o);
     void (*draw)();
 
-} glObject;
+};
 
 
 void initializeObject(glObject *o, vertices *v, void (*draw)(glObject *o));
