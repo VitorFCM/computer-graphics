@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../globjects.h"
-#include "triangle-creation.h"
+#include "primitives-creation.h"
 #include "file-structs.h"
 #include "file-manager.h"
 #include "auxiliary.h"
@@ -25,6 +25,8 @@ int main(void){
 
 		if(shape == 't')
 			v = createTriangle(header);
+		else if(shape == 'r')
+			v = createRectangle(header);
 		else
 			printf("Forma desconhecida\n");
 

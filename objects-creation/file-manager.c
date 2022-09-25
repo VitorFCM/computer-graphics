@@ -81,6 +81,8 @@ Entity readFile(char *fileName){
 		printf("Problema na leitura do arquivo\n");
 		exit(1);
 	}
+
+
 	int nObjects = 0;
 	fread(&nObjects, sizeof(int), 1, fp);
 
@@ -103,7 +105,10 @@ Entity readFile(char *fileName){
 		glObject *o = (glObject*)malloc(sizeof(glObject));
 		if(h.mode == GL_TRIANGLES){
 			initializeObject(o, v_i, draw_triangle);
+		}else if(h.mode == GL_TRIANGLE_STRIP){
+			initializeObject(o, v_i, draw_rectangle);
 		}
+
 		o->v0 = h.v0;
 		o->v1 = h.v1;
 		o->v2 = h.v2;
