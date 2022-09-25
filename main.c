@@ -56,7 +56,7 @@ int main() {
     initializeProgram("Teste", 500, 500);
 
     glObject rect;
-    initializeObject(&rect, vertices_rectangle(0.3,0.1), draw_rectangle);
+    initializeObject(&rect, vertices_rectangle(0.0,0.0,0.3,0.1), draw_rectangle);
     Entity entity;
     initializeEntity(&entity);
     entity.addGlObject(&entity, &rect);
