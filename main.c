@@ -76,7 +76,7 @@ void changeControl(){
 
 	//index_l++;
 	//if(index_l == nEntity)index_l = 0;
-	index_l = 1//fiz isso so pra ver se funcionava
+	index_l = 1;//fiz isso so pra ver se funcionava
 		   //printf("Saiu com %i\n\n", index_l);
 		e = entityList[index_l];
 
