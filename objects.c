@@ -1,9 +1,17 @@
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
+#include "program.h"
 #include "objects.h"
 #include "globjects.h"
 
 vertices* vertices_rectangle(float x, float y, float width, float height) {
+
+    x = convertValue(x);
+    y = convertValue(y);
+
+    width = convertValue(width);
+    height = convertValue(height);
 
     float x_v = x + width / 2.0f;
     float y_v = y + height / 2.0f;

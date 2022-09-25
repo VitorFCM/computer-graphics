@@ -21,7 +21,7 @@ void controller(Entity *e, int key, int action);
 
 void controller(Entity *e, int key, int action) {
 
-    float dt = 0.01f;
+    float dt = 1.0f;
     float dtheta = 0.5f;
 
     switch (key) {
@@ -53,12 +53,13 @@ void controller(Entity *e, int key, int action) {
 
 int main() {
 
-    initializeProgram("Teste", 500, 500);
+    initializeProgram("Teste", 600, 600);
 
     glObject rect;
-    initializeObject(&rect, vertices_rectangle(0.0,0.0,0.3,0.1), draw_rectangle);
+    initializeObject(&rect, vertices_rectangle(0.0,0.0,100,100), draw_rectangle);
     Entity entity;
     initializeEntity(&entity);
+    entity.t_x = 300.0;
     entity.addGlObject(&entity, &rect);
     entity.setController(&entity, controller);
 

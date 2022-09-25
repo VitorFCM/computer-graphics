@@ -56,17 +56,34 @@ void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
 
     if (o == NULL) return;
 
-    float transformation[] = translation_matrix(o->t_x,o->t_y,o->t_z);
+    float c_t_x, c_t_y, c_t_z;
+    float c_ref_rot_x, c_ref_rot_y, c_ref_rot_z;
+    float c_ref_sca_x, c_ref_sca_y, c_ref_sca_z;
+
+    c_t_x = convertValue(o->t_x);
+    c_t_y = convertValue(o->t_y);
+    c_t_z = convertValue(o->t_z);
+
+    c_ref_rot_x = convertValue(o->ref_rotation_x);
+    c_ref_rot_y = convertValue(o->ref_rotation_y);
+    c_ref_rot_z = convertValue(o->ref_rotation_z);
+
+    c_ref_sca_x = convertValue(o->ref_scale_x);
+    c_ref_sca_y = convertValue(o->ref_scale_y);
+    c_ref_sca_z = convertValue(o->ref_scale_z);
+
+//    float transformation[] = translation_matrix(o->t_x,o->t_y,o->t_z);
+    float transformation[] = translation_matrix(c_t_x,c_t_y,c_t_z);
 
     float dx, dy, dz;
     if (o->ref_rotation == TRANSFORMATION_IN_PLACE) {
-        dx = o->t_x;
-        dy = o->t_y;
-        dz = o->t_z;
+        dx = c_t_x;
+        dy = c_t_y;
+        dz = c_t_z;
     } else {
-        dx = o->ref_rotation_x;
-        dy = o->ref_rotation_y;
-        dz = o->ref_rotation_z;
+        dx = c_ref_rot_x;
+        dy = c_ref_rot_y;
+        dz = c_ref_rot_z;
     }
 
     float tranls1[] = translation_matrix(-dx, -dy, -dz);
@@ -78,13 +95,13 @@ void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
     multiplica(tranls2, transformation, transformation);
 
     if (o->ref_scale == TRANSFORMATION_IN_PLACE) {
-        dx = o->t_x;
-        dy = o->t_y;
-        dz = o->t_z;
+        dx = c_t_x;
+        dy = c_t_y;
+        dz = c_t_z;
     } else {
-        dx = o->ref_scale_x;
-        dy = o->ref_scale_y;
-        dz = o->ref_scale_z;
+        dx = c_ref_sca_x;
+        dy = c_ref_sca_y;
+        dz = c_ref_sca_z;
     }
 
     float tranls3[] = translation_matrix(-dx, -dy, -dz);

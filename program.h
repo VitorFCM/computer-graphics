@@ -6,6 +6,8 @@
 #include "entity.h"
 #include "linkedlist.h"
 
+#define SCREEN_SIZE 600
+
 typedef struct Program {
 
     GLFWwindow *window;
@@ -25,6 +27,8 @@ void startProgram();
 GLint getGLPosition();
 GLint getGLTransformation();
 GLint getGLColor();
+
+float convertValue(float value);
 
 void addEntityToProgram(Entity *e);
 #endif
