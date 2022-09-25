@@ -6,6 +6,10 @@
 #include "entity.h"
 #include "linkedlist.h"
 
+/**
+ * Define o tamanho da área lógica da aplicação. Este número define como o sistema de
+ * coordenadas da aplicação é construido.
+ */
 #define SCREEN_SIZE 600
 
 typedef struct Program {
