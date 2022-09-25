@@ -21,14 +21,14 @@ auxiliary.o: auxiliary.c
 file-manager.o: file-manager.c
 	gcc -o file-manager.o -c file-manager.c
 
-triangle-creation.o: triangle-creation.c
-	gcc -o triangle-creation.o -c triangle-creation.c
+primitives-creation.o: primitives-creation.c
+	gcc -o primitives-creation.o -c primitives-creation.c
 
 create-obj.o: create-obj.c
 	gcc -o create-obj.o -c create-obj.c
 
-create-obj: create-obj.o triangle-creation.o file-manager.o objects.o globjects.o auxiliary.o entity.o program.o linkedlist.o
-	gcc -o create-obj create-obj.o triangle-creation.o file-manager.o objects.o globjects.o auxiliary.o entity.o program.o linkedlist.o ${LIBS}
+create-obj: create-obj.o primitives-creation.o file-manager.o objects.o globjects.o auxiliary.o entity.o program.o linkedlist.o
+	gcc -o create-obj create-obj.o primitives-creation.o file-manager.o objects.o globjects.o auxiliary.o entity.o program.o linkedlist.o ${LIBS}
 
 clear:
 	@rm *.o
