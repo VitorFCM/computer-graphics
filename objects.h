@@ -5,10 +5,10 @@
 
 #define POINTS_CIRCLE   128
 
-vertices* vertices_rectangle(float altura, float largura);
+vertices* vertices_rectangle(float x, float y, float width, float height);
 void draw_rectangle();
 
-vertices* vertices_circle(float radius);
+vertices* vertices_circle(float radius, float x, float y);
 void draw_circle();
 
 vertices* vertices_triangle(float x1, float y1, float x2, float y2, float x3, float y3);

@@ -3,16 +3,16 @@
 #include "objects.h"
 #include "globjects.h"
 
-vertices* vertices_rectangle(float altura, float largura) {
+vertices* vertices_rectangle(float x, float y, float width, float height) {
 
-    float x = largura / 2.0f;
-    float y = altura / 2.0f;
+    float x_v = x + width / 2.0f;
+    float y_v = y + height / 2.0f;
 
     coordinates c[] = {
-            {x,y},
-            {x,-y},
-            {-x,y},
-            {-x,-y}
+            {x_v,y_v},
+            {x_v,-y_v},
+            {-x_v,y_v},
+            {-x_v,-y_v}
     };
 
     unsigned int n = sizeof(c) / sizeof(c[0]);
@@ -30,7 +30,7 @@ void draw_rectangle() {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-vertices* vertices_circle(float radius) {
+vertices* vertices_circle(float radius, float x, float y) {
 
     coordinates *c = (coordinates*) malloc(sizeof(coordinates) * POINTS_CIRCLE);
 
@@ -38,14 +38,14 @@ vertices* vertices_circle(float radius) {
     float incr = (2.0f * pi) / POINTS_CIRCLE;
     float r= radius;
     float angle = 0.0f;
-    float x, y;
+    float x_p, y_p;
 
     for (int i = 0; i < POINTS_CIRCLE; i++){
         angle += incr;
-        x = cos(angle) * r;
-        y = sin(angle) * r;
-        c[i].x = x;
-        c[i].y = y;
+        x_p = x + cos(angle) * r;
+        y_p = y + sin(angle) * r;
+        c[i].x = x_p;
+        c[i].y = y_p;
     }
 
     vertices *v = (vertices*) malloc(sizeof(vertices));
