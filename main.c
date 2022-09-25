@@ -14,6 +14,7 @@
 #include "globjects.h"
 #include "entity.h"
 #include "objects.h"
+#include "objects-creation/file-manager.h"
 
 #define GLFW_INCLUDE_NONE
 
@@ -21,49 +22,51 @@ void controller(Entity *e, int key, int action);
 
 void controller(Entity *e, int key, int action) {
 
-    float dt = 0.01f;
-    float dtheta = 0.5f;
+	float dt = 0.01f;
+	float dtheta = 0.5f;
 
-    switch (key) {
+	switch (key) {
 
-        case GLFW_KEY_UP:
-            e->t_y += dt;
-            break;
-        case GLFW_KEY_DOWN:
-            e->t_y -= dt;
-            break;
-        case GLFW_KEY_LEFT:
-            e->t_x -= dt;
-            break;
-        case GLFW_KEY_RIGHT:
-            e->t_x += dt;
-            break;
-        case GLFW_KEY_Q:
-            e->theta_z += dtheta;
-            break;
-        case GLFW_KEY_E:
-            e->theta_z -= dtheta;
-            break;
+		case GLFW_KEY_UP:
+			e->t_y += dt;
+			break;
+		case GLFW_KEY_DOWN:
+			e->t_y -= dt;
+			break;
+		case GLFW_KEY_LEFT:
+			e->t_x -= dt;
+			break;
+		case GLFW_KEY_RIGHT:
+			e->t_x += dt;
+			break;
+		case GLFW_KEY_Q:
+			e->theta_z += dtheta;
+			break;
+		case GLFW_KEY_E:
+			e->theta_z -= dtheta;
+			break;
 
-        default:
-            break;
+		default:
+			break;
 
-    }
+	}
 }
 
 int main() {
 
-    initializeProgram("Teste", 500, 500);
+	initializeProgram("Teste", 500, 500);
 
-    glObject rect;
-    initializeObject(&rect, vertices_rectangle(0.3,0.1), draw_rectangle);
-    Entity entity;
-    initializeEntity(&entity);
-    entity.addGlObject(&entity, &rect);
-    entity.setController(&entity, controller);
+	glObject rect;
+	initializeObject(&rect, vertices_rectangle(0.3,0.1), draw_rectangle);
+	Entity entity;
+	initializeEntity(&entity);
+	entity.addGlObject(&entity, &rect);
+	entity.setController(&entity, controller);
 
-    addEntityToProgram(&entity);
-
-    startProgram();
+	addEntityToProgram(&entity);
+	/*
+	   Entity e = readFile("p\0");
+	   addEntityToProgram(&e);*/
+	startProgram();
 }
 
