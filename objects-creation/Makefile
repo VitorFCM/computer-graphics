@@ -1,5 +1,14 @@
 LIBS = -lglfw -lGL -lGLEW -lm
 
+linkedlist.o: ../linkedlist.c
+	gcc -o linkedlist.o -c ../linkedlist.c
+
+program.o: ../program.c
+	gcc -o program.o -c ../program.c
+
+entity.o: ../entity.c
+	gcc -o entity.o -c ../entity.c
+
 globjects.o: ../globjects.c
 	gcc -o globjects.o -c ../globjects.c
 
@@ -18,8 +27,8 @@ triangle-creation.o: triangle-creation.c
 create-obj.o: create-obj.c
 	gcc -o create-obj.o -c create-obj.c
 
-create-obj: create-obj.o triangle-creation.o file-manager.o objects.o globjects.o auxiliary.o
-	gcc -o create-obj create-obj.o triangle-creation.o file-manager.o objects.o globjects.o auxiliary.o ${LIBS}
+create-obj: create-obj.o triangle-creation.o file-manager.o objects.o globjects.o auxiliary.o entity.o program.o linkedlist.o
+	gcc -o create-obj create-obj.o triangle-creation.o file-manager.o objects.o globjects.o auxiliary.o entity.o program.o linkedlist.o ${LIBS}
 
 clear:
 	@rm *.o

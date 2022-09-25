@@ -1,6 +1,12 @@
 LIBS_W = -lglfw3dll -lglew32 -lopengl32 -lm
 LIBS_L = -lglfw -lGL -lGLEW -lm
 
+auxiliary.o: objects-creation/auxiliary.c
+	gcc -o auxiliary.o -c objects-creation/auxiliary.c
+
+file-manager.o: objects-creation/file-manager.c
+	gcc -o file-manager.o -c objects-creation/file-manager.c
+
 program.o: program.c
 	gcc -o program.o -c program.c
 
@@ -19,11 +25,11 @@ globjects.o: globjects.c
 main.o: main.c
 	gcc -o main.o -c main.c
 
-mainW: main.o globjects.o objects.o entity.o linkedlist.o program.o
-	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o ${LIBS_W}
+mainW: main.o globjects.o objects.o entity.o linkedlist.o program.o file-manager.o auxiliary.o
+	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o file-manager.o auxiliary.o ${LIBS_W}
 
-mainL: main.o globjects.o objects.o entity.o linkedlist.o program.o
-	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o ${LIBS_L}
+mainL: main.o globjects.o objects.o entity.o linkedlist.o program.o file-manager.o auxiliary.o
+	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o file-manager.o auxiliary.o ${LIBS_L}
 
 clearWindows:
 	del *.o
