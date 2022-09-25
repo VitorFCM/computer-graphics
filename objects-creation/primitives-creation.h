@@ -5,6 +5,7 @@
 #include "../globjects.h"
 
 void colorsInput(objHeader *header);
+vertices* createCircle(objHeader *header);
 vertices* createRectangle(objHeader *header);
 vertices* createTriangle(objHeader *header);
 

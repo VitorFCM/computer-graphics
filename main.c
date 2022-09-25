@@ -54,19 +54,20 @@ void controller(Entity *e, int key, int action) {
 
 int main() {
 
-	initializeProgram("Teste", 500, 500);
+	initializeProgram("Teste", 800, 800);
 
-	glObject rect;
-	initializeObject(&rect, vertices_rectangle(0.3,0.1), draw_rectangle);
-	Entity entity;
-	initializeEntity(&entity);
-	entity.addGlObject(&entity, &rect);
-	entity.setController(&entity, controller);
-
-	addEntityToProgram(&entity);
 	/*
-	   Entity e = readFile("p\0");
-	   addEntityToProgram(&e);*/
+	   glObject rect;
+	   initializeObject(&rect, vertices_rectangle(0.3,0.1), draw_rectangle);
+	   Entity entity;
+	   initializeEntity(&entity);
+	   entity.addGlObject(&entity, &rect);
+	   entity.setController(&entity, controller);
+
+	   addEntityToProgram(&entity);*/
+	Entity e = readFile("p\0");
+	e.setController(&e, controller);
+	addEntityToProgram(&e);
 	startProgram();
 }
 

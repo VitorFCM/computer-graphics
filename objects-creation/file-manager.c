@@ -107,7 +107,10 @@ Entity readFile(char *fileName){
 			initializeObject(o, v_i, draw_triangle);
 		}else if(h.mode == GL_TRIANGLE_STRIP){
 			initializeObject(o, v_i, draw_rectangle);
+		}else if(h.mode == GL_TRIANGLE_FAN){
+			initializeObject(o, v_i, draw_circle);
 		}
+
 
 		o->v0 = h.v0;
 		o->v1 = h.v1;

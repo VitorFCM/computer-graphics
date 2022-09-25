@@ -27,6 +27,8 @@ int main(void){
 			v = createTriangle(header);
 		else if(shape == 'r')
 			v = createRectangle(header);
+		else if(shape == 'c')
+			v = createCircle(header);
 		else
 			printf("Forma desconhecida\n");
 

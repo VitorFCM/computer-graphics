@@ -32,19 +32,38 @@ void colorsInput(objHeader *header){
 
 }
 
+vertices* createCircle(objHeader *header){
+
+	float inputs[3];
+	char *msg[3] = {"do raio", "do x do centro", "do y do centro"};
+
+	for(int i = 0; i < 3; i++){
+		printf("Insira o valor %s: ", msg[i]);
+		scanf("%f", &(inputs[i]));
+	}
+
+	vertices *v = vertices_circle(inputs[0], inputs[1], inputs[2]);
+	header->mode = GL_TRIANGLE_FAN;
+	header->nCoordinates = v->number;
+
+	colorsInput(header);
+
+	return v;
+}
+
 vertices* createRectangle(objHeader *header){
 	float inputs[4];
-	char *msg[4] = {"x do centro", "y do centro", "largura", "altura"};
+	char *msg[4] = {"do x do centro", "do y do centro", "da largura", "da altura"};
 
 	for(int i = 0; i < 4; i++){
-		printf("Insira o valor de %s: ", msg[i]);
+		printf("Insira o valor %s: ", msg[i]);
 		scanf("%f", &(inputs[i]));
 	}
 
 	vertices *v = vertices_rectangle(inputs[0], inputs[1], inputs[2], inputs[3]);
 
 	header->mode = GL_TRIANGLE_STRIP;
-	header->nCoordinates = 4;//v->number;
+	header->nCoordinates = v->number;
 
 	colorsInput(header);
 
@@ -64,7 +83,7 @@ vertices* createTriangle(objHeader *header){
 	vertices *v = vertices_triangle(c[0].x, c[0].y, c[1].x, c[1].y, c[2].x, c[2].y);
 
 	header->mode = GL_TRIANGLES;
-	header->nCoordinates = 3;
+	header->nCoordinates = v->number;
 
 	colorsInput(header);
 
