@@ -3,29 +3,28 @@
 #include <math.h>
 
 #include "globjects.h"
+#include "program.h"
 
-void multiplica(float *m1, float *m2, float *m_resultado);
 void destroyObject(glObject *o);
 void loadBuffer(glObject *o);
 void transform(glObject *o);
 void color(glObject *o);
 void render(glObject *o);
 
-void initializeObject(glObject *o, vertices *v, GLint gltransformation, GLint glcolor, void (*draw)(glObject *o)) {
+void multiplica(float *m1, float *m2, float *m_resultado);
+
+void initializeObject(glObject *o, vertices *v, void (*draw)(glObject *o)) {
 
     if (o == NULL) return;
 
-    o->gltransformation = gltransformation;
-    o->glcolor = glcolor;
+    o->gltransformation = getGLTransformation();
+    o->glcolor = getGLColor();
 
     o->vertices = v;
-//    o->number_vertices = number_verticex;
-//    o->vertices = vertices;
-//    o->vertices = (coordinates*) malloc(sizeof(coordinates) * number_verticex);
 
-    o->ref_rotation = 0;
+    o->ref_rotation = TRANSFORMATION_IN_PLACE;
     o->ref_rotation_x = o->ref_rotation_y = o->ref_rotation_z = 0.0f;
-    o->ref_scale = 0;
+    o->ref_scale = TRANSFORMATION_IN_PLACE;
     o->ref_scale_x = o->ref_scale_y = o->ref_scale_z = 0.0f;
     
     o->v0 = o->v3 = 1.0f;
@@ -50,7 +49,6 @@ void destroyObject(glObject *o) {
 
 void loadBuffer(glObject *o) {
     if (o == NULL) return;
-//    glBufferData(GL_ARRAY_BUFFER, o->number_vertices * sizeof(coordinates), o->vertices, GL_DYNAMIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, o->vertices->number * sizeof(coordinates), o->vertices->v, GL_DYNAMIC_DRAW);
 }
 
@@ -61,7 +59,7 @@ void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
     float transformation[] = translation_matrix(o->t_x,o->t_y,o->t_z);
 
     float dx, dy, dz;
-    if (o->ref_rotation == 0) {
+    if (o->ref_rotation == TRANSFORMATION_IN_PLACE) {
         dx = o->t_x;
         dy = o->t_y;
         dz = o->t_z;
@@ -79,7 +77,7 @@ void transform(glObject *o) { // sequencia: translada -> rotacionada -> escala
     multiplica(rot, transformation, transformation);
     multiplica(tranls2, transformation, transformation);
 
-    if (o->ref_scale == 0) {
+    if (o->ref_scale == TRANSFORMATION_IN_PLACE) {
         dx = o->t_x;
         dy = o->t_y;
         dz = o->t_z;
@@ -114,6 +112,8 @@ void render(glObject *o) {
     color(o);
     o->draw();
 }
+
+// **********************************************************************
 
 void veccpy(coordinates *dest, unsigned int size_dest, coordinates *origin, unsigned int size_origin) {
     

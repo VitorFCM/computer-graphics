@@ -1,4 +1,8 @@
-LIBS = -lglfw -lGL -lGLEW -lm
+LIBS_W = -lglfw3dll -lglew32 -lopengl32 -lm
+LIBS_L = -lglfw -lGL -lGLEW -lm
+
+program.o: program.c
+	gcc -o program.o -c program.c
 
 linkedlist.o: linkedlist.c
 	gcc -o linkedlist.o -c linkedlist.c
@@ -15,12 +19,20 @@ globjects.o: globjects.c
 main.o: main.c
 	gcc -o main.o -c main.c
 
-main: main.o globjects.o objects.o entity.o linkedlist.o
-	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o ${LIBS}
+mainW: main.o globjects.o objects.o entity.o linkedlist.o program.o
+	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o ${LIBS_W}
 
-clear:
+mainL: main.o globjects.o objects.o entity.o linkedlist.o program.o
+	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o ${LIBS_L}
+
+clearWindows:
+	del *.o
+
+clearLinux:
 	@rm *.o
 
-run: main clear
-	./main
+runWindows: mainW clearWindows
+	./main.exe
 
+runLinux: mainL clearLinux
+	./main
