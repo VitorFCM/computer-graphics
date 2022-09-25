@@ -1,3 +1,4 @@
 main
 *.o
 objects-creation/create-obj
+objects/
