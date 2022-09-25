@@ -18,7 +18,12 @@
 
 #define GLFW_INCLUDE_NONE
 
+int index_l = 0;
+int nEntity = 2;
+Entity **entityList;
+
 void controller(Entity *e, int key, int action);
+void changeControl();
 
 void controller(Entity *e, int key, int action) {
 
@@ -40,10 +45,22 @@ void controller(Entity *e, int key, int action) {
 			e->t_x += dt;
 			break;
 		case GLFW_KEY_Q:
-			e->theta_z += dtheta;
+			e->theta_z += dt;
 			break;
 		case GLFW_KEY_E:
-			e->theta_z -= dtheta;
+			e->theta_z -= dt;
+			break;
+		case GLFW_KEY_A:
+			e->s_x += dt;
+			e->s_y += dt;
+			break;
+		case GLFW_KEY_D:
+			e->s_x -= dt;
+			e->s_y -= dt;
+			break;
+		case GLFW_KEY_T:
+			printf("Vai fazer a troca\n");
+			changeControl();
 			break;
 
 		default:
@@ -52,22 +69,39 @@ void controller(Entity *e, int key, int action) {
 	}
 }
 
+void changeControl(){
+	//printf("Entrou com %i\n", index_l);
+	Entity *e = entityList[index_l];
+	e->setController(e, NULL);
+
+	//index_l++;
+	//if(index_l == nEntity)index_l = 0;
+	index_l = 1//fiz isso so pra ver se funcionava
+		   //printf("Saiu com %i\n\n", index_l);
+		e = entityList[index_l];
+
+	e->setController(e, controller);
+}
+
 int main() {
 
 	initializeProgram("Teste", 800, 800);
 
-	/*
-	   glObject rect;
-	   initializeObject(&rect, vertices_rectangle(0.3,0.1), draw_rectangle);
-	   Entity entity;
-	   initializeEntity(&entity);
-	   entity.addGlObject(&entity, &rect);
-	   entity.setController(&entity, controller);
+	entityList = (Entity**)malloc(nEntity*sizeof(Entity*));
+	for(int i = 0; i < nEntity; i++){
+		entityList[i] = (Entity*)malloc(sizeof(Entity));
+	}
 
-	   addEntityToProgram(&entity);*/
-	Entity e = readFile("p\0");
+	Entity e = readFile("mesa\0");
 	e.setController(&e, controller);
+	entityList[0] = &e;
 	addEntityToProgram(&e);
+
+	Entity e2 = readFile("quadro\0");
+	//e2.setController(&e2, controller);
+	entityList[1] = &e2;
+	addEntityToProgram(&e2);
+
 	startProgram();
 }
 
