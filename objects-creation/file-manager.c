@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "../globjects.h"
+#include "../entity.h"
+#include "../objects.h"
 #include "file-structs.h"
 #include "auxiliary.h"
 
@@ -47,7 +49,7 @@ void writeFigure(vertices** verticesList, objHeader **headers, int nObjects){
 	fclose(fp);
 }
 
-void readHeader(FILE *fp, header *h){
+void readHeader(FILE *fp, objHeader *h){
 	fread(&h->mode, sizeof(GLenum), 1, fp);
 
 	fread(&h->v0, sizeof(GLfloat), 1, fp);
@@ -69,32 +71,29 @@ void readCoordinate(FILE *fp, coordinates *c){
 //will return all globjects from a single file.
 Entity readFile(char *fileName){
 
-	char path[27] = "../objects/\0";
+	char path[27] = "objects/\0";
 
 	strcat(path, fileName);
 
 	FILE *fp;
 	fp = fopen(path, "rb");
-
+	if(fp == NULL){
+		printf("Problema na leitura do arquivo\n");
+		exit(1);
+	}
 	int nObjects = 0;
 	fread(&nObjects, sizeof(int), 1, fp);
-	/*
-	   glObject **glObjectList = (glObject**)malloc(nObjects*sizeof(glObject*));
-	   for(int i = 0; i < nObjects; i++){
-	   glObjectList[i] = (glObject*)malloc(sizeof(glObject));
-	   }
-	   */
 
 	Entity entity;
 	initializeEntity(&entity);
 
 	for(int i = 0; i < nObjects; i++){
-		header h;
+		objHeader h;
 		readHeader(fp, &h);
 
 		vertices *v_i = (vertices*)malloc(sizeof(vertices));
 		v_i->number = h.nCoordinates;
-		v_i->v = (coordinates*)malloc(sizeof(coordinate) * h.nCoordinates);
+		v_i->v = (coordinates*)malloc(sizeof(coordinates) * h.nCoordinates);
 		for(int j = 0; j < h.nCoordinates; j++){
 			coordinates c;
 			readCoordinate(fp, &c);
@@ -102,12 +101,15 @@ Entity readFile(char *fileName){
 		}
 
 		glObject *o = (glObject*)malloc(sizeof(glObject));
-		if(h->mode == GL_TRIANGLES){
+		if(h.mode == GL_TRIANGLES){
+			initializeObject(o, v_i, draw_triangle);
 		}
-		//o->vertices = v_i;
-		glObjectList[i] = o;
-
+		o->v0 = h.v0;
+		o->v1 = h.v1;
+		o->v2 = h.v2;
+		o->v3 = h.v3;
 		entity.addGlObject(&entity, o);
 	}
 	fclose(fp);
+	return entity;
 }
