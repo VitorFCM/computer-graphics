@@ -26,7 +26,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 	CC_FLAGS += -lglfw -lGL -lGLEW -lm
-endif
+	endif
 endif
 
 all: $(PROJ_NAME)
