@@ -1,9 +1,11 @@
-/* para linux, instalar os pacotes libglfw3-dev mesa-common-dev libglew-dev */
-/* para compilar no linux: gcc main.c -lglfw -lGL -lGLEW -lm */
-
-/* para windows, instalar bibliotecas compiladas do glfw3 e glew no ambiente mingw */
-/* para compilar no windows: gcc main.c -lglfw3dll -lglew32 -lopengl32 */
-
+/*
+ * Trabalho de Computação Gráfica
+ *
+ * Integrantes do Grupo:
+ * Gabriel de Avelar Las Casas Rebelo - nUsp: 11800462
+ * Lucas Carvalho Freiberger Stapf - nUsp: 11800559
+ * Vitor Favrin Carrera Miguel - nUsp: 11800646
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -23,7 +25,7 @@ void controller(Entity *e, int key, int action) {
 
     float dt = 5.0f;
     float dtheta = 0.5f;
-    float ds = 0.1f;
+    float ds = 0.05f;
 
     switch (key) {
 
