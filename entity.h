@@ -4,6 +4,9 @@
 #include "linkedlist.h"
 #include "globjects.h"
 
+/**
+ * Estrutura responsável pelos objetos anexados a uma entidade.
+ */
 typedef struct AttachedObject {
 
     glObject *object;
@@ -20,8 +23,16 @@ typedef struct AttachedObject {
 
 } AttachedObject;
 
+/**
+ * Entidades são um conjunto de objetos ou até mesmo de entidades que se comportam como um só.
+ * Transformações que são aplicadas na entidade são aplicadas a todas as suas listas de
+ * objetos anexados e entidades anexadas.
+ */
 typedef struct Entity Entity;
 
+/**
+ * Estrutura responsável pelas entidades anexadas a outra entidade.
+ */
 typedef struct AttachedEntity {
 
     Entity *entity;
@@ -38,7 +49,7 @@ typedef struct AttachedEntity {
 
 } AttachedEntity;
 
-typedef struct Entity {
+struct Entity {
 
     LinkedList objects;
     LinkedList entities;
@@ -70,7 +81,7 @@ typedef struct Entity {
     void (*setController)(Entity *e, void (*controller)(Entity *e, int key, int action));
     void (*render)();
 
-} Entity;
+};
 
 void initializeEntity(Entity *e);
 

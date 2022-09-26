@@ -7,6 +7,11 @@ void addEntity(Entity *e, Entity *attached, float attachment_x, float attachment
 void setController(Entity *e, void (*controller)(Entity *e, int key, int action));
 void renderEntity(Entity *e);
 
+/**
+ * Inicializa uma entidade. Por padrão, transformações de rotação e escala acontecem com
+ * referência a posição da própria entidade.
+ * @param e entidade a ser inicializada.
+ */
 void initializeEntity(Entity *e) {
 
     initializeLinkedList(&e->objects);
@@ -32,6 +37,11 @@ void initializeEntity(Entity *e) {
     e->controller = NULL;
 }
 
+/**
+ * Adiciona objetos à entidade.
+ * @param e entidade.
+ * @param o objeto a ser adicionado.
+ */
 void addGlObject(Entity *e, glObject *o) {
 
     AttachedObject *ao = (AttachedObject*) malloc(sizeof(AttachedObject));
@@ -61,6 +71,13 @@ void addGlObject(Entity *e, glObject *o) {
     e->objects.add(&e->objects, ao);
 }
 
+/**
+ * Adiciona um entidade a outra entidade.
+ * @param e entidade alvo.
+ * @param attached entidade a ser adicionada.
+ * @param attachment_x abscissa de ancoragem.
+ * @param attachment_y ordenada de ancoragem.
+ */
 void addEntity(Entity *e, Entity *attached, float attachment_x, float attachment_y) {
 
     AttachedEntity *ae = (AttachedEntity *) malloc(sizeof(AttachedEntity));
@@ -90,41 +107,23 @@ void addEntity(Entity *e, Entity *attached, float attachment_x, float attachment
     e->entities.add(&e->entities, ae);
 }
 
+/**
+ * Define a função que irá receber as entradas do teclado.
+ * @param e entidade.
+ * @param controller função de controle.
+ */
 void setController(Entity *e, void (*controller)(Entity *e, int key, int action)) {
 
     if (e == NULL) return;
     e->controller = controller;
 }
 
+/**
+ * Renderiza a entidade. A ordem de renderização é a mesma ordem de adição nas listas de
+ * entidades anexadas e objetos anexados.
+ * @param e entidade.
+ */
 void renderEntity(Entity *e) {
-
-    Node *nodeEnt = e->entities.head;
-
-    while (nodeEnt != NULL) {
-
-        AttachedEntity *ae = (AttachedEntity*) nodeEnt->data;
-
-        ae->entity->t_x = e->t_x + ae->t_x;
-        ae->entity->t_y = e->t_y + ae->t_y;
-        ae->entity->t_z = e->t_z + ae->t_z;
-
-        ae->entity->s_x = e->s_x * ae->s_x;
-        ae->entity->s_y = e->s_y * ae->s_y;
-        ae->entity->s_z = e->s_z * ae->s_z;
-
-        ae->entity->theta_z = e->theta_z + ae->theta_z;
-
-        ae->entity->ref_scale_x = e->t_x;
-        ae->entity->ref_scale_y = e->t_y;
-        ae->entity->ref_scale_z = e->t_z;
-
-        ae->entity->ref_rotation_x = e->t_x + ae->entity->ref_rotation_x;
-        ae->entity->ref_rotation_y = e->t_y + ae->entity->ref_rotation_y;
-        ae->entity->ref_rotation_z = e->t_z + ae->entity->ref_rotation_z;
-
-        ae->entity->render(ae->entity);
-        nodeEnt = nodeEnt->next;
-    }
 
     Node *nodeObj = e->objects.head;
 
@@ -153,6 +152,34 @@ void renderEntity(Entity *e) {
         ao->object->render(ao->object);
 
         nodeObj = nodeObj->next;
+    }
+
+    Node *nodeEnt = e->entities.head;
+
+    while (nodeEnt != NULL) {
+
+        AttachedEntity *ae = (AttachedEntity*) nodeEnt->data;
+
+        ae->entity->t_x = e->t_x + ae->t_x;
+        ae->entity->t_y = e->t_y + ae->t_y;
+        ae->entity->t_z = e->t_z + ae->t_z;
+
+        ae->entity->s_x = e->s_x * ae->s_x;
+        ae->entity->s_y = e->s_y * ae->s_y;
+        ae->entity->s_z = e->s_z * ae->s_z;
+
+        ae->entity->theta_z = e->theta_z + ae->theta_z;
+
+        ae->entity->ref_scale_x = e->t_x;
+        ae->entity->ref_scale_y = e->t_y;
+        ae->entity->ref_scale_z = e->t_z;
+
+        ae->entity->ref_rotation_x = e->t_x + ae->entity->ref_rotation_x;
+        ae->entity->ref_rotation_y = e->t_y + ae->entity->ref_rotation_y;
+        ae->entity->ref_rotation_z = e->t_z + ae->entity->ref_rotation_z;
+
+        ae->entity->render(ae->entity);
+        nodeEnt = nodeEnt->next;
     }
 
 }

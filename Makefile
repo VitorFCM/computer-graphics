@@ -1,44 +1,44 @@
-LIBS_W = -lglfw3dll -lglew32 -lopengl32 -lm
-LIBS_L = -lglfw -lGL -lGLEW -lm
+# Nome do projeto
+PROJ_NAME = projeto
 
-auxiliary.o: objects-creation/auxiliary.c
-	gcc -o auxiliary.o -c objects-creation/auxiliary.c
+# Arquivos .c
+C_SOURCE = $(wildcard *.c)
 
-file-manager.o: objects-creation/file-manager.c
-	gcc -o file-manager.o -c objects-creation/file-manager.c
+# Arquivos .h
+H_SOURCE = $(wildcard *.h)
 
-program.o: program.c
-	gcc -o program.o -c program.c
+# Arquivos .o
+OBJS = $(C_SOURCE:.c=.o)
 
-linkedlist.o: linkedlist.c
-	gcc -o linkedlist.o -c linkedlist.c
+# Compilador
+CC = gcc
 
-entity.o: entity.c
-	gcc -o entity.o -c entity.c
+RUN := $(PROJ_NAME)
+CLEAR = @rm *.o $(PROJ_NAME)
 
-objects.o: objects.c
-	gcc -o objects.o -c objects.c
+# Flags para o compilador
+CC_FLAGS :=
+ifeq ($(OS),Windows_NT)
+	CC_FLAGS += -lglfw3dll -lglew32 -lopengl32 -lm
+	RUN := $(RUN).exe
+	CLEAR = del *.o $(PROJ_NAME).exe
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+	CC_FLAGS += -lglfw -lGL -lGLEW -lm
+endif
+endif
 
-globjects.o: globjects.c
-	gcc -o globjects.o -c globjects.c
+all: $(PROJ_NAME)
 
-main.o: main.c
-	gcc -o main.o -c main.c
+$(PROJ_NAME): $(OBJS)
+	$(CC) -o $@ $^ $(CC_FLAGS)
 
-mainW: main.o globjects.o objects.o entity.o linkedlist.o program.o file-manager.o auxiliary.o
-	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o file-manager.o auxiliary.o ${LIBS_W}
+%.o: %.c %.h
+	$(CC) -o $@ -c $<
 
-mainL: main.o globjects.o objects.o entity.o linkedlist.o program.o file-manager.o auxiliary.o
-	gcc -o main main.o globjects.o objects.o entity.o linkedlist.o  program.o file-manager.o auxiliary.o ${LIBS_L}
+run: $(PROJ_NAME)
+	./$(RUN)
 
-clearWindows:
-	del *.o
-
-clearLinux:
-	@rm *.o
-
-runWindows: mainW clearWindows
-	./main.exe
-
-runLinux: mainL clearLinux
-	./main
+clear:
+	$(CLEAR)

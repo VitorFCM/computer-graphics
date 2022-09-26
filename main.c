@@ -1,9 +1,11 @@
-/* para linux, instalar os pacotes libglfw3-dev mesa-common-dev libglew-dev */
-/* para compilar no linux: gcc main.c -lglfw -lGL -lGLEW -lm */
-
-/* para windows, instalar bibliotecas compiladas do glfw3 e glew no ambiente mingw */
-/* para compilar no windows: gcc main.c -lglfw3dll -lglew32 -lopengl32 */
-
+/*
+ * Trabalho de Computação Gráfica
+ *
+ * Integrantes do Grupo:
+ * Gabriel de Avelar Las Casas Rebelo - nUsp: 11800462
+ * Lucas Carvalho Freiberger Stapf - nUsp: 11800559
+ * Vitor Favrin Carrera Miguel - nUsp: 11800646
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,17 +20,13 @@
 
 #define GLFW_INCLUDE_NONE
 
-int index_l = 0;
-int nEntity = 2;
-Entity **entityList;
-
 void controller(Entity *e, int key, int action);
-void changeControl();
 
 void controller(Entity *e, int key, int action) {
 
-	float dt = 0.01f;
+	float dt = 5.0f;
 	float dtheta = 0.5f;
+	float ds = 0.05f;
 
 	switch (key) {
 
@@ -45,22 +43,20 @@ void controller(Entity *e, int key, int action) {
 			e->t_x += dt;
 			break;
 		case GLFW_KEY_Q:
-			e->theta_z += dt;
+			e->theta_z += dtheta;
 			break;
 		case GLFW_KEY_E:
-			e->theta_z -= dt;
+			e->theta_z -= dtheta;
 			break;
-		case GLFW_KEY_A:
-			e->s_x += dt;
-			e->s_y += dt;
+
+		case GLFW_KEY_I:
+			e->s_x += ds;
+			e->s_y += ds;
 			break;
-		case GLFW_KEY_D:
-			e->s_x -= dt;
-			e->s_y -= dt;
-			break;
-		case GLFW_KEY_T:
-			printf("Vai fazer a troca\n");
-			changeControl();
+
+		case GLFW_KEY_O:
+			e->s_x -= ds;
+			e->s_y -= ds;
 			break;
 
 		default:
@@ -69,38 +65,62 @@ void controller(Entity *e, int key, int action) {
 	}
 }
 
-void changeControl(){
-	//printf("Entrou com %i\n", index_l);
-	Entity *e = entityList[index_l];
-	e->setController(e, NULL);
-
-	//index_l++;
-	//if(index_l == nEntity)index_l = 0;
-	index_l = 1;//fiz isso so pra ver se funcionava
-		   //printf("Saiu com %i\n\n", index_l);
-		e = entityList[index_l];
-
-	e->setController(e, controller);
-}
-
 int main() {
 
-	initializeProgram("Teste", 800, 800);
+	/*	<<<<<<< HEAD
+		initializeProgram("Teste", 800, 800);
 
-	entityList = (Entity**)malloc(nEntity*sizeof(Entity*));
-	for(int i = 0; i < nEntity; i++){
+		entityList = (Entity**)malloc(nEntity*sizeof(Entity*));
+		for(int i = 0; i < nEntity; i++){
 		entityList[i] = (Entity*)malloc(sizeof(Entity));
-	}
+		}
 
-	Entity e = readFile("mesa\0");
-	e.setController(&e, controller);
-	entityList[0] = &e;
-	addEntityToProgram(&e);
+		Entity e = readFile("mesa\0");
+		e.setController(&e, controller);
+		entityList[0] = &e;
+		addEntityToProgram(&e);
 
-	Entity e2 = readFile("quadro\0");
+		Entity e2 = readFile("quadro\0");
 	//e2.setController(&e2, controller);
 	entityList[1] = &e2;
 	addEntityToProgram(&e2);
+	=======*/
+	initializeProgram("Teste", 600, 600);
+
+	Entity e_fundo;
+	initializeEntity(&e_fundo);
+	e_fundo.addGlObject(&e_fundo, basic_rectangle(0, -450, 1200, 300));
+	addEntityToProgram(&e_fundo);
+
+	Entity e_star;
+	initializeEntity(&e_star);
+	glObject *trian_1 = basic_triangle(0.0f, 173.2f, 100.0f, 0.0f,  -100.0f, 0.0f);
+	trian_1->v1 = 1;
+	trian_1->v2 = 1;
+	e_star.addGlObject(&e_star, trian_1);
+	glObject *trian_2 = basic_triangle(0.0f, 173.2f, 100.0f, 0.0f, -100.0f, 0.0f);
+	trian_2->v1 = 1;
+	trian_2->v2 = 1;
+	trian_2->theta_z = 60.0f;
+	e_star.addGlObject(&e_star, trian_2);
+	e_star.t_y = -450;
+	e_fundo.addEntity(&e_fundo, &e_star, 0.0f, 0.0f);
+
+	Entity e_star_mov;
+	initializeEntity(&e_star_mov);
+	glObject *trian_3 = basic_triangle(0.0f, 173.2f, 100.0f, 0.0f,  -100.0f, 0.0f);
+	trian_3->v1 = 1;
+	e_star_mov.addGlObject(&e_star_mov, trian_3);
+	glObject *trian_4 = basic_triangle(0.0f, 173.2f, 100.0f, 0.0f, -100.0f, 0.0f);
+	trian_4->v1 = 1;
+	trian_4->theta_z = 60.0f;
+	e_star_mov.addGlObject(&e_star_mov, trian_4);
+	e_star_mov.setController(&e_star_mov, controller);
+
+	e_star_mov.s_x = e_star_mov.s_y = 2.0f;
+	e_star_mov.theta_z = 45.0f;
+
+	addEntityToProgram(&e_star_mov);
 
 	startProgram();
 }

@@ -124,6 +124,10 @@ GLint getGLColor() {
     return program.glColor;
 }
 
+float convertValue(float value) {
+    return value / SCREEN_SIZE;
+}
+
 void addEntityToProgram(Entity *e) {
     program.entities.add(&program.entities, e);
 }
